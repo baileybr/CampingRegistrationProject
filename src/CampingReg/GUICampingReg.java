@@ -60,6 +60,7 @@ public class GUICampingReg extends JFrame implements ActionListener {
 		this.add(mainPanel);
 		this.setSize(1000, 600);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setTitle("Camping Registration");
 		this.setVisible(true);
 	}
 	
