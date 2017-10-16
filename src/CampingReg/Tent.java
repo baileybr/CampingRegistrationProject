@@ -17,17 +17,8 @@ public class Tent extends Site {
 	 *****************************************************************/
 	public Tent(String name, GregorianCalendar date, int stay,
 			int site, int tents) {
-		/** Sets the name of the occupant */
-		nameReserving = name;
-		
-		/** Sets the check-in date */
-		checkIn = date;
-		
-		/** Sets the number of days the occupant plans to stay */
-		daysStaying = stay;
-		
-		/** Sets the site number */
-		siteNumber = site;
+		/** Calls super class and sets variables accordingly */
+		super(name, date, stay, site);
 		
 		/** Sets the number of tenters */
 		numOfTenters = tents;
