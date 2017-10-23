@@ -3,12 +3,14 @@ package CampingReg;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.GregorianCalendar;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 public class GUICampingReg extends JFrame implements ActionListener {
@@ -27,6 +29,8 @@ public class GUICampingReg extends JFrame implements ActionListener {
 	
 	private JTable table;
 	
+	private SiteModel sModel;
+	
 	/*******************************************************************
 	 * Initialize all class level variables
 	 ******************************************************************/
@@ -44,7 +48,9 @@ public class GUICampingReg extends JFrame implements ActionListener {
 		checkInTent = new JMenuItem("Check-in Tent Site");
 		exit = new JMenuItem("Exit");
 		
-		table = new JTable();
+		sModel = new SiteModel();
+		
+		table = new JTable(sModel);
 	}
 	
 	/*******************************************************************
@@ -55,7 +61,7 @@ public class GUICampingReg extends JFrame implements ActionListener {
 		setupActionListeners();
 		
 		mainPanel.add(menu, BorderLayout.NORTH);
-		mainPanel.add(table, BorderLayout.CENTER);
+		mainPanel.add(new JScrollPane(table), BorderLayout.CENTER);
 		
 		this.add(mainPanel);
 		this.setSize(1000, 600);
@@ -84,10 +90,10 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			System.exit(1);
 		}
 		else if (e.getSource() == checkInTent) {
-			// TODO: Will be added in CAMPREG-5
+			sModel.add(new Tent("Ben", new GregorianCalendar(), 3, 1, 5));
 		}
 		else if (e.getSource() == checkInRv) {
-			// TODO: Will be added in CAMPREG-5
+			sModel.add(new RV("Ben", new GregorianCalendar(), 3, 2, 30));
 		}
 	}
 	
