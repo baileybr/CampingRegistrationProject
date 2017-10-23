@@ -74,6 +74,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		panel.add(tentersLabel);
 		panel.add(tentersTxt);
 		panel.add(Box.createVerticalStrut(5));
+		panel.add(Box.createVerticalStrut(5));
 		panel.add(okButton);
 		panel.add(cancelButton);
 		
@@ -82,7 +83,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		
 		dialog.setLocationRelativeTo(parentFrame);
 		dialog.setModal(true);
-		dialog.setTitle("Reserve An RV Site");
+		dialog.setTitle("Reserve A Tent Site");
 		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		dialog.setSize(350, 250);
 		dialog.setVisible(true);

@@ -73,6 +73,7 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		panel.add(powerLabel);
 		panel.add(powerBox);
 		panel.add(Box.createVerticalStrut(5));
+		panel.add(Box.createVerticalStrut(5));
 		panel.add(okButton);
 		panel.add(cancelButton);
 		

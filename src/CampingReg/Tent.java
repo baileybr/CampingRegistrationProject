@@ -26,6 +26,14 @@ public class Tent extends Site {
 	}
 	
 	/*****************************************************************
+	 * Constructor that sets up the tent site with default settings
+	 * 
+	 *****************************************************************/
+	public Tent () {
+		
+	}
+	
+	/*****************************************************************
 	 * Getter method for the number of tenters on this site
 	 * 
 	 * @return numOfTenter is the number of tenters on this site
