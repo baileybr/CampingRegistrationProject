@@ -15,53 +15,83 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class DialogCheckInTent extends JDialog implements ActionListener{
+	
 	private static final long serialVersionUID = 1L;
+	
+	/* JTextFields */
 	private JTextField nameTxt, occupyedOnTxt, stayingTxt, 
 	siteNumberTxt, tentersTxt;
 	
+	/* JButtons */
 	private JButton okButton, cancelButton;
+	
+	/* Close Status */
 	private boolean closeStatus;
+	
+	/* Tent Object */
 	private Tent unit;  
 	
+	/* JLabels */
 	private JLabel nameLabel, occupyingLabel, stayingLabel, siteLabel,
 	tentersLabel;
 	
+	/* Gregorian Calendar */
 	private GregorianCalendar gCalenderCheckIn;
 	
+	/* JDialog */
 	private JDialog dialog;
+	
+	/* JFrame */
 	private JFrame parentFrame;
+	
+	/* JPanel */
 	private JPanel panel;
 	
+	/* Month, Day, and Year */
 	private int month, day, year;
 
 	public DialogCheckInTent(JFrame paOccupy, Tent d) {	
 		unit = d; 
 		
+		//Creates Gregorian Calendar
 		gCalenderCheckIn = new GregorianCalendar();
 		gCalenderCheckIn = d.getCheckIn();
 		month = gCalenderCheckIn.get(GregorianCalendar.MONTH);
 		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
 		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
 		
+		//Creates JDialog
 		dialog = new JDialog();
+		
+		//Creates JTextFields
 		nameTxt = new JTextField();
 		occupyedOnTxt = new JTextField(month + "/" + day + "/" + year);
 		stayingTxt = new JTextField(d.getDaysStaying());
 		siteNumberTxt = new JTextField(d.getSiteNumber());
 		tentersTxt = new JTextField(d.getNumOfTenters());
+		
+		//Creates JButtons
 		okButton = new JButton("Ok");
 		cancelButton = new JButton("Cancel");
+		
+		//Creates JLabels
 		nameLabel = new JLabel("Name of Reserver:");
 		occupyingLabel = new JLabel("Occupied On Date:");
 		stayingLabel = new JLabel("Days Staying:");
 		siteLabel = new JLabel("Requested Site Number:");
 		tentersLabel = new JLabel("Number of Tenters:");
+		
+		//Creates Frame
 		parentFrame = paOccupy;
+		
+		//Sets closeStatus to false
 		closeStatus = false;
 		
+		//Instantiates Buttons
 		okButton.addActionListener(this);
 		cancelButton.addActionListener(this);
 		
+		//Creates JPanel and adds on items
 		panel = new JPanel();
 		panel.add(nameLabel);
 		panel.add(nameTxt);
@@ -78,9 +108,13 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		panel.add(okButton);
 		panel.add(cancelButton);
 		
+		//Sets the layout of the panel
 		panel.setLayout(new GridLayout(7, 2));
+		
+		//Adds the panel to the JDialog
 		dialog.add(panel);
 		
+		//Sets specifics for JDialog
 		dialog.setLocationRelativeTo(parentFrame);
 		dialog.setModal(true);
 		dialog.setTitle("Reserve A Tent Site");

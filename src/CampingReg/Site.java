@@ -50,17 +50,17 @@ public class Site implements Serializable {
 	 * 
 	 *****************************************************************/
 	public Site() {
-		/** Sets the name of the occupant */
-		nameReserving = "Dan Smith";
-		
-		/** Sets the check-in date */
-		checkIn = new GregorianCalendar(2017, 10, 30);
-		
-		/** Sets the number of days the occupant plans to stay */
-		daysStaying = 1;
-		
-		/** Sets the site number */
-		siteNumber = 1;
+//		/** Sets the name of the occupant */
+//		nameReserving = "Dan Smith";
+//		
+//		/** Sets the check-in date */
+//		checkIn = new GregorianCalendar(2017, 10, 30);
+//		
+//		/** Sets the number of days the occupant plans to stay */
+//		daysStaying = 1;
+//		
+//		/** Sets the site number */
+//		siteNumber = 1;
 	}
 	
 	/*****************************************************************
