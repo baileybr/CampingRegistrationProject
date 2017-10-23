@@ -7,31 +7,29 @@ import java.util.GregorianCalendar;
 
 import javax.swing.*;
 
-public class DialogCheckInRv extends JDialog implements ActionListener {
+public class DialogCheckInRv extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JTextField nameTxt, occupyedOnTxt, stayingTxt, 
 	siteNumberTxt;
 	
-	private JComboBox powerBox;
+	private JComboBox<String> powerBox;
 	private JButton okButton, cancelButton;
 	private boolean closeStatus;
-	private Site unit;  
+	private RV unit;  
 	
 	private JLabel nameLabel, occupyingLabel, stayingLabel, siteLabel,
 	powerLabel;
 	
-	private GregorianCalendar gCalenderCheckIn, gCalenderCheckOut; 
+	private GregorianCalendar gCalenderCheckIn;
 	
 	private JDialog dialog;
 	private JFrame parentFrame;
 	private JPanel panel;
 	
-	private int month, day, year, monthOut, dayOut, yearOut;
-	private String[] ampStrings;
+	private int month, day, year;
 
-
-	public DialogCheckInRv(JFrame paOccupy, Site d) {	
+	public DialogCheckInRv(JFrame paOccupy, RV d) {	
 		unit = d; 
 		
 		gCalenderCheckIn = new GregorianCalendar();
@@ -39,12 +37,6 @@ public class DialogCheckInRv extends JDialog implements ActionListener {
 		month = gCalenderCheckIn.get(GregorianCalendar.MONTH);
 		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
 		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
-		
-//		gCalenderCheckOut = new GregorianCalendar();
-//		gCalenderCheckOut.add(GregorianCalendar.DAY_OF_MONTH, d.getDaysStaying());
-//		monthOut = gCalenderCheckOut.get(GregorianCalendar.MONTH);
-//		dayOut = gCalenderCheckOut.get(GregorianCalendar.DAY_OF_MONTH);
-//		yearOut = gCalenderCheckOut.get(GregorianCalendar.YEAR);
 		
 		dialog = new JDialog();
 		nameTxt = new JTextField();
@@ -95,8 +87,21 @@ public class DialogCheckInRv extends JDialog implements ActionListener {
 		dialog.setVisible(true);
 	}
 	
+	/******************************************************************
+	 * Handles the actions of the buttons
+	 * 
+	 * @return e is an ActionEvent that determines the action
+	 *****************************************************************/
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
+			if (check() == true) {
+				unit.setSiteNumber(Integer.parseInt(siteNumberTxt.getText()));
+				unit.setDaysStaying(Integer.parseInt(stayingTxt.getText()));
+				setCheckInDate();
+				setPower();
+				closeStatus = true;
+				dialog.dispose();
+			}
 			
 		}
 		else if (e.getSource() == cancelButton) {
@@ -104,5 +109,80 @@ public class DialogCheckInRv extends JDialog implements ActionListener {
 		}
 		
 	}
+	
+	/******************************************************************
+	 * Private helper method that checks if every text field has
+	 * input
+	 * 
+	 * @return check is true if all textfields have input, false if
+	 * not
+	 *****************************************************************/
+	private boolean check() {
+		boolean check = false;
+		if (nameTxt.getText().length() > 0 &&
+				siteNumberTxt.getText().length() > 0 && 
+				occupyedOnTxt.getText().length() > 0 && 
+				stayingTxt.getText().length() > 0) {
+
+			check = true;
+		}
+		return check;
+	}
+	
+	/******************************************************************
+	 * Private helper method that converts the text in occupyedOnTxt 
+	 * into a GregorianCalender and then calls the set Method from 
+	 * the Site class
+	 * 
+	 *****************************************************************/
+	private void setCheckInDate() {
+		String input[] = occupyedOnTxt.getText().split("/");
+		int inputInt[] = new int[input.length];
+
+		if (!input[0].isEmpty()) {
+			for (int i = 0; i < input.length; i++) {
+				inputInt[i] = Integer.parseInt(input[i].trim());
+			}
+		}
+
+		unit.setCheckIn(new GregorianCalendar(inputInt[2], inputInt[0],
+				inputInt[1]));
+	}
+	
+	/******************************************************************
+	 * Private helper method that sets the power in the RV class
+	 * 
+	 *****************************************************************/
+	private void setPower() {
+		if (powerBox.getSelectedItem().equals("30")) {
+			unit.setPower(30);
+		} else if (powerBox.getSelectedItem().equals("40")) {
+			unit.setPower(40);
+		} else {
+			unit.setPower(50);
+		}
+	}
+	
+	
+	/******************************************************************
+	 * Getter method for unit
+	 * 
+	 * @return unit is the current RV
+	 *****************************************************************/
+	public RV getRV() {
+		return unit;
+	}
+
+	/******************************************************************
+	 * Getter method for closeStatus
+	 * 
+	 * @return closeStatus is a boolean that changes when the 
+	 * JDialog is finished
+	 *****************************************************************/
+	public boolean getCloseStatus() {
+		return closeStatus;
+	}
+	
+	
 
 }
