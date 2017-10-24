@@ -27,6 +27,14 @@ public class RV extends Site {
 		power = amps;
 		
 	}
+	
+	/*****************************************************************
+	 * Constructor that sets up the tent site with default settings
+	 * 
+	 *****************************************************************/
+	public RV () {
+		
+	}
 
 	/*****************************************************************
 	 * Getter method for the power supplied to the site, power 

@@ -84,10 +84,15 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			System.exit(1);
 		}
 		else if (e.getSource() == checkInTent) {
-			// TODO: Will be added in CAMPREG-5
+			Tent tent = new Tent();
+			DialogCheckInTent dialog = new DialogCheckInTent(this,
+					tent);
+	
 		}
 		else if (e.getSource() == checkInRv) {
-			// TODO: Will be added in CAMPREG-5
+			RV rv = new RV();
+			DialogCheckInRv dialog = new DialogCheckInRv(this,
+					rv);
 		}
 	}
 	
