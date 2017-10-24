@@ -13,6 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+/***********************************************************************
+ * GUICampingReg is the main view of this application
+ * 
+ * @author Ben Buurstra
+ ***********************************************************************/
 public class GUICampingReg extends JFrame implements ActionListener {
 	private JPanel mainPanel;
 	
@@ -71,7 +76,9 @@ public class GUICampingReg extends JFrame implements ActionListener {
 	}
 	
 	/*******************************************************************
+	 * Handles any actions that are performed
 	 * 
+	 * @param e has information about what action was performed
 	 ******************************************************************/
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == saveSerial) {
@@ -90,10 +97,10 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			System.exit(1);
 		}
 		else if (e.getSource() == checkInTent) {
-			sModel.add(new Tent("Ben", new GregorianCalendar(), 3, 1, 5));
+			// TODO: Will be added in CAMPREG-5
 		}
 		else if (e.getSource() == checkInRv) {
-			sModel.add(new RV("Ben", new GregorianCalendar(), 3, 2, 30));
+			// TODO: Will be added in CAMPREG-5
 		}
 	}
 	
@@ -116,6 +123,9 @@ public class GUICampingReg extends JFrame implements ActionListener {
 		menu.add(checkIn);
 	}
 	
+	/*******************************************************************
+	 * Helper method for adding all action listeners
+	 ******************************************************************/
 	private void setupActionListeners() {
 		saveSerial.addActionListener(this);
 		loadSerial.addActionListener(this);
