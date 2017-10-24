@@ -3,6 +3,13 @@ package CampingReg;
 import java.io.Serializable;
 import java.util.*;
 
+/**********************************************************************
+ * Site class, keeps track of the person who is occupying the site,
+ * what date this person checked in, how many days they are staying,
+ * and their site number
+ * 
+ * @author Brendan Bailey
+ *********************************************************************/
 public class Site implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
