@@ -4,6 +4,13 @@ import java.util.GregorianCalendar;
 
 import javax.swing.JOptionPane;
 
+/**********************************************************************
+ * RV class, keeps track of the power supplied to the site,
+ * then relies on the extension of the Site class to keep track of 
+ * other variables
+ * 
+ * @author Brendan Bailey
+ *********************************************************************/
 public class RV extends Site {
 	
 	/** Represents the power supplied to the site **/
@@ -28,6 +35,14 @@ public class RV extends Site {
 		
 		/** Sets power supplied */
 		power = amps;
+	}
+	
+	/*****************************************************************
+	 * Constructor that sets up the tent site with default settings
+	 * 
+	 *****************************************************************/
+	public RV () {
+		
 	}
 
 	/*****************************************************************

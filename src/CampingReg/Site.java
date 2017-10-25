@@ -3,12 +3,13 @@ package CampingReg;
 import java.io.Serializable;
 import java.util.*;
 
-/***********************************************************************
- * The site class is the base class of all other 'site' types, so it
- * holds values that all sites share/require
+/**********************************************************************
+ * Site class, keeps track of the person who is occupying the site,
+ * what date this person checked in, how many days they are staying,
+ * and their site number
  * 
- * @author Ben Buurstra
- **********************************************************************/
+ * @author Brendan Bailey
+ *********************************************************************/
 public class Site implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -58,17 +59,17 @@ public class Site implements Serializable {
 	 * 
 	 *****************************************************************/
 	public Site() {
-		/** Sets the name of the occupant **/
-		nameReserving = "Dan Smith";
-		
-		/** Sets the check-in date **/
-		checkIn = new GregorianCalendar(2017, 10, 30);
-		
-		/** Sets the number of days the occupant plans to stay **/
-		daysStaying = 1;
-		
-		/** Sets the site number **/
-		siteNumber = 1;
+//		/** Sets the name of the occupant */
+//		nameReserving = "Dan Smith";
+//		
+//		/** Sets the check-in date */
+//		checkIn = new GregorianCalendar(2017, 10, 30);
+//		
+//		/** Sets the number of days the occupant plans to stay */
+//		daysStaying = 1;
+//		
+//		/** Sets the site number */
+//		siteNumber = 1;
 	}
 	
 	/*****************************************************************
