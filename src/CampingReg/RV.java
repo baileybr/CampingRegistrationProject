@@ -4,18 +4,28 @@ import java.util.GregorianCalendar;
 
 import javax.swing.JOptionPane;
 
+/**********************************************************************
+ * RV class, keeps track of the power supplied to the site,
+ * then relies on the extension of the Site class to keep track of 
+ * other variables
+ * 
+ * @author Brendan Bailey
+ *********************************************************************/
 public class RV extends Site {
 	
-	/** Represents the power supplied to the site */
+	/** Represents the power supplied to the site **/
 	private int power;   // 30, 40, 50 amps of service
 	
 	/*****************************************************************
 	 * Constructor that sets up the RV site with given parameters
 	 * 
 	 * @param name is the name of the person occupying the
-	 * site, date is the check In date, stay is the number of days the
-	 * person is reserving for their stay, site is the number of their 
-	 * site, amps is the power supplied to the site (can be either 30,
+	 * site
+	 * @param date is the check In date
+	 * @param stay is the number of days the person is reserving for 
+	 * their stay
+	 * @param site is the number of their site
+	 * @param amps is the power supplied to the site (can be either 30,
 	 * 40, or 50)
 	 *****************************************************************/
 	public RV(String name, GregorianCalendar date, int stay,
@@ -25,7 +35,6 @@ public class RV extends Site {
 		
 		/** Sets power supplied */
 		power = amps;
-		
 	}
 	
 	/*****************************************************************
@@ -56,10 +65,9 @@ public class RV extends Site {
 	public void setPower(int amps) {
 		if (amps == 30 || amps == 40 || amps == 50) {
 			power = amps;
-			}
+		}
 		else 
 			JOptionPane.showMessageDialog(null, "Power can only be"
 					+ " supplied in 30, 40, or 50 amps.");
 		}
-	
 }

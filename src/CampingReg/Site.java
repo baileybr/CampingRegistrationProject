@@ -3,44 +3,53 @@ package CampingReg;
 import java.io.Serializable;
 import java.util.*;
 
+/**********************************************************************
+ * Site class, keeps track of the person who is occupying the site,
+ * what date this person checked in, how many days they are staying,
+ * and their site number
+ * 
+ * @author Brendan Bailey
+ *********************************************************************/
 public class Site implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	/** The name of the person who is occupying the Site */
+	/** The name of the person who is occupying the Site **/
 	protected String nameReserving;
 
-	/** The date the Site was checked-in (occupied) */
+	/** The date the Site was checked-in (occupied) **/
 	protected GregorianCalendar checkIn;
 
-	/** The estimated number of days the person is reserving */
-	/** This is just an estimate when the camper is  */
-	/** is checking in  */
+	/** The estimated number of days the person is reserving **/
+	/** This is just an estimate when the camper is  **/
+	/** is checking in  **/
 	protected int daysStaying; 
 
-	/** The Site number */
+	/** The Site number **/
 	protected int siteNumber;  
 	
 	/*****************************************************************
 	 * Constructor that sets up the site with given parameters
 	 * 
 	 * @param name is the name of the person occupying the
-	 * site, date is the check In date, stay is the number of days the
-	 * person is reserving for their stay, site is the number of their 
 	 * site
+	 * @param date is the check In date
+	 * @param stay is the number of days the person is reserving for 
+	 * their stay
+	 * @param site is the number of their site
 	 *****************************************************************/
 	public Site(String name, GregorianCalendar date, int stay,
 			int site) {
-		/** Sets the name of the occupant */
+		/** Sets the name of the occupant **/
 		nameReserving = name;
 		
-		/** Sets the check-in date */
+		/** Sets the check-in date **/
 		checkIn = date;
 		
-		/** Sets the number of days the occupant plans to stay */
+		/** Sets the number of days the occupant plans to stay **/
 		daysStaying = stay;
 		
-		/** Sets the site number */
+		/** Sets the site number **/
 		siteNumber = site;
 		
 	}

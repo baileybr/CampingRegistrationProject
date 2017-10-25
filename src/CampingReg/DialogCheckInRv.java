@@ -7,6 +7,11 @@ import java.util.GregorianCalendar;
 
 import javax.swing.*;
 
+/**********************************************************************
+ * Class that creates the JDialog Box when checking in to an RV site
+ * 
+ * @author Brendan Bailey
+ *********************************************************************/
 public class DialogCheckInRv extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
@@ -46,6 +51,12 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	/* Month, Day, and Year */
 	private int month, day, year;
 
+	/**********************************************************************
+	 * Constructor that sets up the Dialog with given parameters
+	 * 
+	 * @param paOccupy is the frame for the JDialog, d is the RV being
+	 * checked in
+	 *********************************************************************/
 	public DialogCheckInRv(JFrame paOccupy, RV d) {	
 		unit = d; 
 		
@@ -129,7 +140,7 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	/******************************************************************
 	 * Handles the actions of the buttons
 	 * 
-	 * @return e is an ActionEvent that determines the action
+	 * @param e is an ActionEvent that determines the action
 	 *****************************************************************/
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {

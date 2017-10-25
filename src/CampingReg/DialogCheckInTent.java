@@ -7,13 +7,17 @@ import java.util.GregorianCalendar;
 
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**********************************************************************
+ * Class that creates the JDialog Box when checking in to an Tent site
+ * 
+ * @author Brendan Bailey
+ *********************************************************************/
 public class DialogCheckInTent extends JDialog implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
@@ -50,6 +54,12 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	/* Month, Day, and Year */
 	private int month, day, year;
 
+	/**********************************************************************
+	 * Constructor that sets up the Dialog with given parameters
+	 * 
+	 * @param paOccupy is the frame for the JDialog, d is the Tent being
+	 * checked in
+	 *********************************************************************/
 	public DialogCheckInTent(JFrame paOccupy, Tent d) {	
 		unit = d; 
 		
@@ -126,7 +136,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	/******************************************************************
 	 * Handles the actions of the buttons
 	 * 
-	 * @return e is an ActionEvent that determines the action
+	 * @param e is an ActionEvent that determines the action
 	 *****************************************************************/
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
