@@ -2,6 +2,12 @@ package CampingReg;
 
 import java.util.GregorianCalendar;
 
+/**********************************************************************
+ * Tent class, keeps track of the number of Tenters, then relies on
+ * the extension of the Site class to keep track of other variables
+ * 
+ * @author Brendan Bailey
+ *********************************************************************/
 public class Tent extends Site {
 	
 	/** Represents the number of tenters on this site */
