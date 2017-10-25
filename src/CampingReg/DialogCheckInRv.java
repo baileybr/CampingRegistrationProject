@@ -134,12 +134,16 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
 			if (check() == true) {
-				unit.setSiteNumber(Integer.parseInt(siteNumberTxt.getText()));
-				unit.setDaysStaying(Integer.parseInt(stayingTxt.getText()));
+				unit.setSiteNumber(Integer.parseInt
+						(siteNumberTxt.getText()));
+				unit.setDaysStaying(Integer.parseInt
+						(stayingTxt.getText()));
 				setCheckInDate();
 				setPower();
 				closeStatus = true;
 				dialog.dispose();
+				JOptionPane.showMessageDialog(null, "You Owe: $" + 
+				calcPriceRV(Integer.parseInt(stayingTxt.getText())));
 			}
 			
 		}
@@ -167,6 +171,18 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		}
 		return check;
 	}
+	
+	/******************************************************************
+	 * Private helper method that checks if every text field has
+	 * input
+	 * 
+	 * @return check is true if all textfields have input, false if
+	 * not
+	 *****************************************************************/
+	private double calcPriceRV(int daysStaying) {
+		double cost = daysStaying * 30;
+		return cost;
+		}
 	
 	/******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 
