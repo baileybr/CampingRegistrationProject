@@ -203,6 +203,8 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		}
 		
 		if (a == true && b == true) {
+			if(Integer.parseInt(siteNumberTxt.getText()) > 0 &&
+					Integer.parseInt(stayingTxt.getText()) > 0) {
 			unit.setSiteNumber(Integer.parseInt
 					(siteNumberTxt.getText()));
 			unit.setDaysStaying(Integer.parseInt
@@ -210,6 +212,10 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 			JOptionPane.showMessageDialog(null, "You Owe: $" + 
 					calcPriceRV(Integer.parseInt(stayingTxt.getText())));
 			dialog.dispose();
+			}
+			else
+				JOptionPane.showMessageDialog(null, "Please make sure all "
+						+ "inputs are greater than 0.");
 		}
 			
 		}

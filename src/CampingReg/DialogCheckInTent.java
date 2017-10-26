@@ -176,7 +176,8 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	
 	/******************************************************************
 	 * Private helper method that checks if textfields that require
-	 * an int, have them. If this is the case, it closes the dialog
+	 * an int, have them. If this is the case, it closes the dialog and
+	 * displays the cost 
 	 * 
 	 *****************************************************************/
 	private void checkFields() {
@@ -203,12 +204,15 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		try {
 			Integer.parseInt(tentersTxt.getText());
 		} catch (NumberFormatException ex){
-			JOptionPane.showMessageDialog(null, "Number of tenters must"
+			JOptionPane.showMessageDialog(null,"Number of tenters must"
 					+ " be an integer. Please enter" + " an integer.");
 			c = false;
 		}
 		
 		if (a == true && b == true && c == true) {
+			if(Integer.parseInt(siteNumberTxt.getText()) > 0 &&
+					Integer.parseInt(stayingTxt.getText()) > 0 &&
+					Integer.parseInt(tentersTxt.getText()) > 0) {
 			unit.setSiteNumber(Integer.parseInt
 					(siteNumberTxt.getText()));
 			unit.setDaysStaying(Integer.parseInt
@@ -218,6 +222,10 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 			JOptionPane.showMessageDialog(null, "You Owe: $" + 
 					calcPriceTent(Integer.parseInt(stayingTxt.getText())));
 			dialog.dispose();
+			}
+			else
+				JOptionPane.showMessageDialog(null, "Please make sure "
+						+ "all inputs are greater than 0.");
 		}
 			
 		}
