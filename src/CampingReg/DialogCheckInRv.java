@@ -62,7 +62,6 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		
 		//Creates Gregorian Calendar
 		gCalenderCheckIn = new GregorianCalendar();
-		gCalenderCheckIn = d.getCheckIn();
 		month = gCalenderCheckIn.get(GregorianCalendar.MONTH);
 		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
 		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
@@ -71,7 +70,7 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		dialog = new JDialog();
 		
 		//Creates JTextFields
-		nameTxt = new JTextField();
+		nameTxt = new JTextField(d.getNameReserving());
 		occupyedOnTxt = new JTextField(month + "/" + day + "/" + year);
 		stayingTxt = new JTextField(d.getDaysStaying());
 		siteNumberTxt = new JTextField(d.getSiteNumber());
@@ -145,6 +144,7 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
 			if (check() == true) {
+				unit.setNameReserving(nameTxt.getText());
 				unit.setSiteNumber(Integer.parseInt
 						(siteNumberTxt.getText()));
 				unit.setDaysStaying(Integer.parseInt
@@ -152,9 +152,9 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 				setCheckInDate();
 				setPower();
 				closeStatus = true;
-				dialog.dispose();
 				JOptionPane.showMessageDialog(null, "You Owe: $" + 
 				calcPriceRV(Integer.parseInt(stayingTxt.getText())));
+				dialog.dispose();
 			}
 			
 		}
@@ -184,11 +184,10 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	}
 	
 	/******************************************************************
-	 * Private helper method that checks if every text field has
-	 * input
+	 * Private helper method that calculates the price of renting
+	 * an RV site
 	 * 
-	 * @return check is true if all textfields have input, false if
-	 * not
+	 * @return cost is the cost of renting the site
 	 *****************************************************************/
 	private double calcPriceRV(int daysStaying) {
 		double cost = daysStaying * 30;

@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -65,7 +66,6 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		
 		//Creates Gregorian Calendar
 		gCalenderCheckIn = new GregorianCalendar();
-		gCalenderCheckIn = d.getCheckIn();
 		month = gCalenderCheckIn.get(GregorianCalendar.MONTH);
 		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
 		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
@@ -74,7 +74,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		dialog = new JDialog();
 		
 		//Creates JTextFields
-		nameTxt = new JTextField();
+		nameTxt = new JTextField(d.getNameReserving());
 		occupyedOnTxt = new JTextField(month + "/" + day + "/" + year);
 		stayingTxt = new JTextField(d.getDaysStaying());
 		siteNumberTxt = new JTextField(d.getSiteNumber());
@@ -141,11 +141,18 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
 			if (check() == true) {
-				unit.setSiteNumber(Integer.parseInt(siteNumberTxt.getText()));
-				unit.setDaysStaying(Integer.parseInt(stayingTxt.getText()));
-				unit.setNumOfTenters(Integer.parseInt(tentersTxt.getText()));
+				unit.setNameReserving(nameTxt.getText());
+				unit.setSiteNumber(Integer.parseInt
+						(siteNumberTxt.getText()));
+				unit.setDaysStaying(Integer.parseInt
+						(stayingTxt.getText()));
+				unit.setNumOfTenters(Integer.parseInt
+						(tentersTxt.getText()));
 				setCheckInDate();
 				closeStatus = true;
+				JOptionPane.showMessageDialog(null, "You Owe: $" + 
+						calcPriceTent(Integer.parseInt
+								(stayingTxt.getText())));
 				dialog.dispose();
 			}
 			
@@ -175,6 +182,17 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		}
 		return check;
 	}
+	
+	/******************************************************************
+	 * Private helper method that calculates the price of renting
+	 * an Tent site
+	 * 
+	 * @return cost is the cost of renting the site
+	 *****************************************************************/
+	private double calcPriceTent(int daysStaying) {
+		double cost = (daysStaying * 3 * unit.getNumOfTenters());
+		return cost;
+		}
 	
 	/******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 
