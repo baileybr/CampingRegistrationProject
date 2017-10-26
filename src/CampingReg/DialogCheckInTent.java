@@ -142,18 +142,9 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		if (e.getSource() == okButton) {
 			if (check() == true) {
 				unit.setNameReserving(nameTxt.getText());
-				unit.setSiteNumber(Integer.parseInt
-						(siteNumberTxt.getText()));
-				unit.setDaysStaying(Integer.parseInt
-						(stayingTxt.getText()));
-				unit.setNumOfTenters(Integer.parseInt
-						(tentersTxt.getText()));
 				setCheckInDate();
 				closeStatus = true;
-				JOptionPane.showMessageDialog(null, "You Owe: $" + 
-						calcPriceTent(Integer.parseInt
-								(stayingTxt.getText())));
-				dialog.dispose();
+				checkFields();
 			}
 			
 		}
@@ -182,6 +173,54 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		}
 		return check;
 	}
+	
+	/******************************************************************
+	 * Private helper method that checks if textfields that require
+	 * an int, have them. If this is the case, it closes the dialog
+	 * 
+	 *****************************************************************/
+	private void checkFields() {
+		boolean a = true;
+		boolean b = true;
+		boolean c = true;
+		
+		try {
+			Integer.parseInt(siteNumberTxt.getText());
+		} catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(null, "Site number must be"
+					+ " an integer. Please enter" + " an integer.");
+			a = false;
+		}
+		
+		try {
+			Integer.parseInt(stayingTxt.getText());
+		} catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(null, "Days staying must be"
+					+ " an integer. Please enter" + " an integer.");
+			b = false;
+		}
+		
+		try {
+			Integer.parseInt(tentersTxt.getText());
+		} catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(null, "Number of tenters must"
+					+ " be an integer. Please enter" + " an integer.");
+			c = false;
+		}
+		
+		if (a == true && b == true && c == true) {
+			unit.setSiteNumber(Integer.parseInt
+					(siteNumberTxt.getText()));
+			unit.setDaysStaying(Integer.parseInt
+					(stayingTxt.getText()));
+			unit.setNumOfTenters(Integer.parseInt
+					(tentersTxt.getText()));
+			JOptionPane.showMessageDialog(null, "You Owe: $" + 
+					calcPriceTent(Integer.parseInt(stayingTxt.getText())));
+			dialog.dispose();
+		}
+			
+		}
 	
 	/******************************************************************
 	 * Private helper method that calculates the price of renting
