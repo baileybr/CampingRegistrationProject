@@ -99,10 +99,20 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			}
 		}
 		else if (e.getSource() == saveText) {
-			// TODO: Will be added in CAMPREG-8
+			JFileChooser chooser = new JFileChooser();
+			int status = chooser.showSaveDialog(null);
+			if (status == JFileChooser.APPROVE_OPTION) {
+				String filename = chooser.getSelectedFile().getAbsolutePath();
+				//sModel.saveText(filename);
+			}
 		}
 		else if (e.getSource() == loadText) {
-			// TODO: Will be added in CAMPREG-8
+			JFileChooser chooser = new JFileChooser();
+			int status = chooser.showOpenDialog(null);
+			if (status == JFileChooser.APPROVE_OPTION) {
+				String filename = chooser.getSelectedFile().getAbsolutePath();
+				//sModel.loadSerial(filename);
+			}
 		}
 		else if (e.getSource() == exit) {
 			System.exit(1);
@@ -111,15 +121,18 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			Tent tent = new Tent();
 			DialogCheckInTent dialog = new DialogCheckInTent(this,
 					tent);
-	
-			sModel.add(tent);
+			if (dialog.getCloseStatus() == true) {
+				sModel.add(dialog.getTent());
+			}
 		}
 		else if (e.getSource() == checkInRv) {
 			RV rv = new RV();
 			DialogCheckInRv dialog = new DialogCheckInRv(this,
 					rv);
-			
-			sModel.add(rv);
+
+			if (dialog.getCloseStatus() == true) {
+				sModel.add(dialog.getRV());
+			}
 		}
 	}
 	

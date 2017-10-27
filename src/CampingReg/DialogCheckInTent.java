@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -65,7 +66,6 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		
 		//Creates Gregorian Calendar
 		gCalenderCheckIn = new GregorianCalendar();
-		gCalenderCheckIn = d.getCheckIn();
 		month = gCalenderCheckIn.get(GregorianCalendar.MONTH);
 		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
 		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
@@ -74,7 +74,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		dialog = new JDialog();
 		
 		//Creates JTextFields
-		nameTxt = new JTextField();
+		nameTxt = new JTextField(d.getNameReserving());
 		occupyedOnTxt = new JTextField(month + "/" + day + "/" + year);
 		stayingTxt = new JTextField(d.getDaysStaying());
 		siteNumberTxt = new JTextField(d.getSiteNumber());
@@ -141,14 +141,11 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
 			if (check() == true) {
-				unit.setSiteNumber(Integer.parseInt(siteNumberTxt.getText()));
-				unit.setDaysStaying(Integer.parseInt(stayingTxt.getText()));
-				unit.setNumOfTenters(Integer.parseInt(tentersTxt.getText()));
+				unit.setNameReserving(nameTxt.getText());
 				setCheckInDate();
 				closeStatus = true;
-				dialog.dispose();
+				checkFields();
 			}
-			
 		}
 		else if (e.getSource() == cancelButton) {
 			dialog.dispose();
@@ -175,6 +172,73 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		}
 		return check;
 	}
+	
+	/******************************************************************
+	 * Private helper method that checks if textfields that require
+	 * an int, have them. If this is the case, it closes the dialog and
+	 * displays the cost 
+	 * 
+	 *****************************************************************/
+	private void checkFields() {
+		boolean a = true;
+		boolean b = true;
+		boolean c = true;
+		
+		try {
+			Integer.parseInt(siteNumberTxt.getText());
+		} catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(null, "Site number must be"
+					+ " an integer. Please enter" + " an integer.");
+			a = false;
+		}
+		
+		try {
+			Integer.parseInt(stayingTxt.getText());
+		} catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(null, "Days staying must be"
+					+ " an integer. Please enter" + " an integer.");
+			b = false;
+		}
+		
+		try {
+			Integer.parseInt(tentersTxt.getText());
+		} catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(null,"Number of tenters must"
+					+ " be an integer. Please enter" + " an integer.");
+			c = false;
+		}
+		
+		if (a == true && b == true && c == true) {
+			if(Integer.parseInt(siteNumberTxt.getText()) > 0 &&
+					Integer.parseInt(stayingTxt.getText()) > 0 &&
+					Integer.parseInt(tentersTxt.getText()) > 0) {
+			unit.setSiteNumber(Integer.parseInt
+					(siteNumberTxt.getText()));
+			unit.setDaysStaying(Integer.parseInt
+					(stayingTxt.getText()));
+			unit.setNumOfTenters(Integer.parseInt
+					(tentersTxt.getText()));
+			JOptionPane.showMessageDialog(null, "You Owe: $" + 
+					calcPriceTent(Integer.parseInt(stayingTxt.getText())));
+			dialog.dispose();
+			}
+			else
+				JOptionPane.showMessageDialog(null, "Please make sure "
+						+ "all inputs are greater than 0.");
+		}
+			
+	}
+	
+	/******************************************************************
+	 * Private helper method that calculates the price of renting
+	 * an Tent site
+	 * 
+	 * @return cost is the cost of renting the site
+	 *****************************************************************/
+	private double calcPriceTent(int daysStaying) {
+		double cost = (daysStaying * 3 * unit.getNumOfTenters());
+		return cost;
+		}
 	
 	/******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 

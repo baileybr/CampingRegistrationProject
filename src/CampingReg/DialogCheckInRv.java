@@ -62,7 +62,6 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		
 		//Creates Gregorian Calendar
 		gCalenderCheckIn = new GregorianCalendar();
-		gCalenderCheckIn = d.getCheckIn();
 		month = gCalenderCheckIn.get(GregorianCalendar.MONTH);
 		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
 		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
@@ -71,7 +70,7 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		dialog = new JDialog();
 		
 		//Creates JTextFields
-		nameTxt = new JTextField();
+		nameTxt = new JTextField(d.getNameReserving());
 		occupyedOnTxt = new JTextField(month + "/" + day + "/" + year);
 		stayingTxt = new JTextField(d.getDaysStaying());
 		siteNumberTxt = new JTextField(d.getSiteNumber());
@@ -145,12 +144,11 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
 			if (check() == true) {
-				unit.setSiteNumber(Integer.parseInt(siteNumberTxt.getText()));
-				unit.setDaysStaying(Integer.parseInt(stayingTxt.getText()));
+				unit.setNameReserving(nameTxt.getText());
 				setCheckInDate();
 				setPower();
 				closeStatus = true;
-				dialog.dispose();
+				checkFields();
 			}
 			
 		}
@@ -178,6 +176,60 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		}
 		return check;
 	}
+	
+	/******************************************************************
+	 * Private helper method that checks if textfields that require
+	 * an int, have them. If this is the case, it closes the dialog
+	 * 
+	 *****************************************************************/
+	private void checkFields() {
+		boolean a = true;
+		boolean b = true;
+		
+		try {
+			Integer.parseInt(siteNumberTxt.getText());
+		} catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(null, "Site number must be"
+					+ " an integer. Please enter" + " an integer.");
+			a = false;
+		}
+		
+		try {
+			Integer.parseInt(stayingTxt.getText());
+		} catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(null, "Days staying must be"
+					+ " an integer. Please enter" + " an integer.");
+			b = false;
+		}
+		
+		if (a == true && b == true) {
+			if(Integer.parseInt(siteNumberTxt.getText()) > 0 &&
+					Integer.parseInt(stayingTxt.getText()) > 0) {
+			unit.setSiteNumber(Integer.parseInt
+					(siteNumberTxt.getText()));
+			unit.setDaysStaying(Integer.parseInt
+					(stayingTxt.getText()));
+			JOptionPane.showMessageDialog(null, "You Owe: $" + 
+					calcPriceRV(Integer.parseInt(stayingTxt.getText())));
+			dialog.dispose();
+			}
+			else
+				JOptionPane.showMessageDialog(null, "Please make sure all "
+						+ "inputs are greater than 0.");
+		}
+			
+		}
+	
+	/******************************************************************
+	 * Private helper method that calculates the price of renting
+	 * an RV site
+	 * 
+	 * @return cost is the cost of renting the site
+	 *****************************************************************/
+	private double calcPriceRV(int daysStaying) {
+		double cost = daysStaying * 30;
+		return cost;
+		}
 	
 	/******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 
