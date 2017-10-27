@@ -151,7 +151,6 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 					dialog.dispose();
 				}
 			}
-			
 		}
 		else if (e.getSource() == cancelButton) {
 			dialog.dispose();
@@ -232,7 +231,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		}
 			return false;
 			
-		}
+	}
 	
 	/******************************************************************
 	 * Private helper method that calculates the price of renting

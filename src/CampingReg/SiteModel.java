@@ -1,9 +1,18 @@
 package CampingReg;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 /***********************************************************************
@@ -75,9 +84,13 @@ public class SiteModel extends AbstractTableModel {
 			case 0:
 				return sites.get(rowIndex).getNameReserving();
 			case 1:
-				Date temp = sites.get(rowIndex).getCheckIn().getTime();
+				GregorianCalendar temp = sites.get(rowIndex).getCheckIn();
 				
-				return new SimpleDateFormat("MM/dd/YYY").format(temp);
+				String retVal = (temp.get(GregorianCalendar.MONTH))
+					+ "/" + (temp.get(GregorianCalendar.DAY_OF_MONTH))
+					+ "/" + (temp.get(GregorianCalendar.YEAR));
+				
+				return retVal;
 			case 2:
 				return sites.get(rowIndex).getDaysStaying();
 			case 3:
@@ -110,6 +123,54 @@ public class SiteModel extends AbstractTableModel {
 	public void add(Site site) {
 		sites.add(site);
 		
+		refresh();
+	}
+	
+	public void saveSerial(String filename) {
+		try {
+			FileOutputStream f = new FileOutputStream(new File(filename));
+			ObjectOutputStream o = new ObjectOutputStream(f);
+			
+			o.writeObject(sites);
+			
+			o.close();
+			f.close();
+		} catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
+	}
+	
+	public void loadSerial(String filename) {
+		try {
+			FileInputStream f = new FileInputStream(new File(filename));
+			ObjectInputStream o = new ObjectInputStream(f);
+			
+			sites = (ArrayList<Site>) o.readObject();
+			
+			refresh();
+			
+			o.close();
+			f.close();
+		} catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		} catch (ClassNotFoundException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
+	}
+	
+	public void saveText() {
+		
+	}
+	
+	public void loadText() {
+		
+	}
+	
+	private void refresh() {
 		fireTableRowsInserted(0, getRowCount() - 1);
 	}
 }

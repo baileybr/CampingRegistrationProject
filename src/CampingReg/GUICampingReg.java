@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.GregorianCalendar;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -82,16 +83,36 @@ public class GUICampingReg extends JFrame implements ActionListener {
 	 ******************************************************************/
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == saveSerial) {
-			// TODO: Will be added in CAMPREG-8
+			JFileChooser chooser = new JFileChooser();
+			int status = chooser.showSaveDialog(null);
+			if (status == JFileChooser.APPROVE_OPTION) {
+				String filename = chooser.getSelectedFile().getAbsolutePath();
+				sModel.saveSerial(filename);
+			}
 		}
 		else if (e.getSource() == loadSerial) {
-			// TODO: Will be added in CAMPREG-8
+			JFileChooser chooser = new JFileChooser();
+			int status = chooser.showOpenDialog(null);
+			if (status == JFileChooser.APPROVE_OPTION) {
+				String filename = chooser.getSelectedFile().getAbsolutePath();
+				sModel.loadSerial(filename);
+			}
 		}
 		else if (e.getSource() == saveText) {
-			// TODO: Will be added in CAMPREG-8
+			JFileChooser chooser = new JFileChooser();
+			int status = chooser.showSaveDialog(null);
+			if (status == JFileChooser.APPROVE_OPTION) {
+				String filename = chooser.getSelectedFile().getAbsolutePath();
+				//sModel.saveText(filename);
+			}
 		}
 		else if (e.getSource() == loadText) {
-			// TODO: Will be added in CAMPREG-8
+			JFileChooser chooser = new JFileChooser();
+			int status = chooser.showOpenDialog(null);
+			if (status == JFileChooser.APPROVE_OPTION) {
+				String filename = chooser.getSelectedFile().getAbsolutePath();
+				//sModel.loadSerial(filename);
+			}
 		}
 		else if (e.getSource() == exit) {
 			System.exit(1);
@@ -103,12 +124,12 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			if (dialog.getCloseStatus() == true) {
 				sModel.add(dialog.getTent());
 			}
-	
 		}
 		else if (e.getSource() == checkInRv) {
 			RV rv = new RV();
 			DialogCheckInRv dialog = new DialogCheckInRv(this,
 					rv);
+
 			if (dialog.getCloseStatus() == true) {
 				sModel.add(dialog.getRV());
 			}
