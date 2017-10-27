@@ -151,5 +151,4 @@ public class Site implements Serializable {
 	public void setSiteNumber(int site) {
 		siteNumber = site;
 	}
-	
 }
