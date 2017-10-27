@@ -41,7 +41,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	tentersLabel;
 	
 	/* Gregorian Calendar */
-	private GregorianCalendar gCalenderCheckIn;
+	private GregorianCalendar gCalendarCheckIn;
 	
 	/* JDialog */
 	private JDialog dialog;
@@ -65,10 +65,10 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		unit = d; 
 		
 		//Creates Gregorian Calendar
-		gCalenderCheckIn = new GregorianCalendar();
-		month = gCalenderCheckIn.get(GregorianCalendar.MONTH);
-		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
-		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
+		gCalendarCheckIn = new GregorianCalendar();
+		month = gCalendarCheckIn.get(GregorianCalendar.MONTH) + 1;
+		day = gCalendarCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
+		year = gCalendarCheckIn.get(GregorianCalendar.YEAR);
 		
 		//Creates JDialog
 		dialog = new JDialog();
@@ -145,6 +145,11 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 				setCheckInDate();
 				closeStatus = true;
 				checkFields();
+				if (setCheckInDate() == true && checkFields() == true){
+					JOptionPane.showMessageDialog(null, "You Owe: $" + 
+					calcPriceTent(Integer.parseInt(stayingTxt.getText())));
+					dialog.dispose();
+				}
 			}
 			
 		}
@@ -175,12 +180,11 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	}
 	
 	/******************************************************************
-	 * Private helper method that checks if textfields that require
-	 * an int, have them. If this is the case, it closes the dialog and
-	 * displays the cost 
+	 * Private helper method that checks ensures appropiate input is 
+	 * entered into the textfields
 	 * 
 	 *****************************************************************/
-	private void checkFields() {
+	private boolean checkFields() {
 		boolean a = true;
 		boolean b = true;
 		boolean c = true;
@@ -219,14 +223,14 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 					(stayingTxt.getText()));
 			unit.setNumOfTenters(Integer.parseInt
 					(tentersTxt.getText()));
-			JOptionPane.showMessageDialog(null, "You Owe: $" + 
-					calcPriceTent(Integer.parseInt(stayingTxt.getText())));
-			dialog.dispose();
 			}
-			else
+			else {
 				JOptionPane.showMessageDialog(null, "Please make sure "
 						+ "all inputs are greater than 0.");
+			return false;
+			}
 		}
+			return false;
 			
 		}
 	
@@ -247,18 +251,40 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	 * the Site class
 	 * 
 	 *****************************************************************/
-	private void setCheckInDate() {
+	private boolean setCheckInDate() {
+		boolean a = true;
 		String input[] = occupyedOnTxt.getText().split("/");
 		int inputInt[] = new int[input.length];
 
 		if (!input[0].isEmpty()) {
+			if (input.length == 3) {
 			for (int i = 0; i < input.length; i++) {
+				try {
 				inputInt[i] = Integer.parseInt(input[i].trim());
+				}catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter"
+							+ " the date"
+							+ " in the correct format, mm/dd/yyyy");
+					a = false;
+					return false;
+					}
 			}
+			
+			}else {
+			JOptionPane.showMessageDialog(null, "Please enter the date"
+					+ " in the correct format, mm/dd/yyyy");
+			a = false;
+			return false;
+			}
+			
 		}
-
-		unit.setCheckIn(new GregorianCalendar(inputInt[2], inputInt[0],
+		if(a = true) {
+		unit.setCheckIn(new GregorianCalendar(inputInt[2], inputInt[0] - 1,
 				inputInt[1]));
+		return true;
+		}
+		else 
+			return false;
 	}
 	
 	
