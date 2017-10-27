@@ -37,7 +37,7 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	powerLabel;
 	
 	/* Gregorian Calendar */
-	private GregorianCalendar gCalenderCheckIn;
+	private GregorianCalendar gCalendarCheckIn;
 	
 	/* JDialog */
 	private JDialog dialog;
@@ -61,17 +61,17 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		unit = d; 
 		
 		//Creates Gregorian Calendar
-		gCalenderCheckIn = new GregorianCalendar();
-		gCalenderCheckIn = d.getCheckIn();
-		month = gCalenderCheckIn.get(GregorianCalendar.MONTH);
-		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
-		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
+		gCalendarCheckIn = new GregorianCalendar();
+		gCalendarCheckIn.setLenient(false);
+		month = gCalendarCheckIn.get(GregorianCalendar.MONTH) + 1;
+		day = gCalendarCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
+		year = gCalendarCheckIn.get(GregorianCalendar.YEAR);
 		
 		//Creates JDialog
 		dialog = new JDialog();
 		
 		//Creates JTextFields
-		nameTxt = new JTextField();
+		nameTxt = new JTextField(d.getNameReserving());
 		occupyedOnTxt = new JTextField(month + "/" + day + "/" + year);
 		stayingTxt = new JTextField(d.getDaysStaying());
 		siteNumberTxt = new JTextField(d.getSiteNumber());
@@ -145,12 +145,20 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
 			if (check() == true) {
-				unit.setSiteNumber(Integer.parseInt(siteNumberTxt.getText()));
-				unit.setDaysStaying(Integer.parseInt(stayingTxt.getText()));
+				unit.setNameReserving(nameTxt.getText());
 				setCheckInDate();
 				setPower();
 				closeStatus = true;
-				dialog.dispose();
+				checkFields();
+				if (setCheckInDate() == true && checkFields() == true){
+					JOptionPane.showMessageDialog(null, "You Owe: $" + 
+					calcPriceRV(Integer.parseInt(stayingTxt.getText())));
+					dialog.dispose();
+				}
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Please make sure "
+						+ "all fields are filled in.");
 			}
 			
 		}
@@ -180,23 +188,101 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	}
 	
 	/******************************************************************
+	 * Private helper method that checks ensures appropiate input is 
+	 * entered into the textfields
+	 * 
+	 *****************************************************************/
+	private boolean checkFields() {
+		boolean a = true;
+		boolean b = true;
+		
+		try {
+			Integer.parseInt(siteNumberTxt.getText());
+		} catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(null, "Site number must be"
+					+ " an integer. Please enter" + " an integer.");
+			a = false;
+		}
+		
+		try {
+			Integer.parseInt(stayingTxt.getText());
+		} catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(null, "Days staying must be"
+					+ " an integer. Please enter" + " an integer.");
+			b = false;
+		}
+		
+		if (a == true && b == true) {
+			if(Integer.parseInt(siteNumberTxt.getText()) > 0 &&
+					Integer.parseInt(stayingTxt.getText()) > 0) {
+			unit.setSiteNumber(Integer.parseInt
+					(siteNumberTxt.getText()));
+			unit.setDaysStaying(Integer.parseInt
+					(stayingTxt.getText()));
+			return true;
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Please make sure all "
+						+ "inputs are greater than 0.");
+			return false;
+			}
+		}
+		else 
+			return false;
+		
+		}
+	
+	/******************************************************************
+	 * Private helper method that calculates the price of renting
+	 * an RV site
+	 * 
+	 * @return cost is the cost of renting the site
+	 *****************************************************************/
+	private double calcPriceRV(int daysStaying) {
+		double cost = daysStaying * 30;
+		return cost;
+		}
+	
+	/******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 
 	 * into a GregorianCalender and then calls the set Method from 
 	 * the Site class
 	 * 
 	 *****************************************************************/
-	private void setCheckInDate() {
+	private boolean setCheckInDate() {
+		boolean a = true;
 		String input[] = occupyedOnTxt.getText().split("/");
 		int inputInt[] = new int[input.length];
 
 		if (!input[0].isEmpty()) {
+			if (input.length == 3) {
 			for (int i = 0; i < input.length; i++) {
+				try {
 				inputInt[i] = Integer.parseInt(input[i].trim());
+				}catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter"
+							+ " the date"
+							+ " in the correct format, mm/dd/yyyy");
+					a = false;
+					return false;
+					}
 			}
+			
+			}else {
+			JOptionPane.showMessageDialog(null, "Please enter the date"
+					+ " in the correct format, mm/dd/yyyy");
+			a = false;
+			return false;
+			}
+			
 		}
-
-		unit.setCheckIn(new GregorianCalendar(inputInt[2], inputInt[0],
+		if(a = true) {
+		unit.setCheckIn(new GregorianCalendar(inputInt[2], inputInt[0] - 1,
 				inputInt[1]));
+		return true;
+		}
+		else 
+			return false;
 	}
 	
 	/******************************************************************
