@@ -37,7 +37,7 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	powerLabel;
 	
 	/* Gregorian Calendar */
-	private GregorianCalendar gCalenderCheckIn;
+	private GregorianCalendar gCalendarCheckIn;
 	
 	/* JDialog */
 	private JDialog dialog;
@@ -61,10 +61,11 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		unit = d; 
 		
 		//Creates Gregorian Calendar
-		gCalenderCheckIn = new GregorianCalendar();
-		month = gCalenderCheckIn.get(GregorianCalendar.MONTH) + 1;
-		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
-		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
+		gCalendarCheckIn = new GregorianCalendar();
+		gCalendarCheckIn.setLenient(false);
+		month = gCalendarCheckIn.get(GregorianCalendar.MONTH) + 1;
+		day = gCalendarCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
+		year = gCalendarCheckIn.get(GregorianCalendar.YEAR);
 		
 		//Creates JDialog
 		dialog = new JDialog();
