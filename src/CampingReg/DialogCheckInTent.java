@@ -66,6 +66,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		
 		//Creates Gregorian Calendar
 		gCalendarCheckIn = new GregorianCalendar();
+		gCalendarCheckIn.setLenient(false);
 		month = gCalendarCheckIn.get(GregorianCalendar.MONTH) + 1;
 		day = gCalendarCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
 		year = gCalendarCheckIn.get(GregorianCalendar.YEAR);
@@ -142,14 +143,15 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		if (e.getSource() == okButton) {
 			if (check() == true) {
 				unit.setNameReserving(nameTxt.getText());
-				setCheckInDate();
 				closeStatus = true;
-				checkFields();
 				if (setCheckInDate() == true && checkFields() == true){
 					JOptionPane.showMessageDialog(null, "You Owe: $" + 
 					calcPriceTent(Integer.parseInt(stayingTxt.getText())));
 					dialog.dispose();
 				}
+			}else {
+				JOptionPane.showMessageDialog(null, "Please make sure "
+						+ "all fields are filled in.");
 			}
 		}
 		else if (e.getSource() == cancelButton) {
@@ -179,7 +181,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	}
 	
 	/******************************************************************
-	 * Private helper method that checks ensures appropiate input is 
+	 * Private helper method that ensures appropriate input is 
 	 * entered into the textfields
 	 * 
 	 *****************************************************************/
@@ -222,6 +224,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 					(stayingTxt.getText()));
 			unit.setNumOfTenters(Integer.parseInt
 					(tentersTxt.getText()));
+			return true;
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Please make sure "
@@ -277,14 +280,94 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 			}
 			
 		}
-		if(a = true) {
-		unit.setCheckIn(new GregorianCalendar(inputInt[2], inputInt[0] - 1,
-				inputInt[1]));
-		return true;
+		if(a = true && checkDates(inputInt[0], inputInt[1],
+				inputInt[2]) == true) {
+			unit.setCheckIn(new GregorianCalendar(inputInt[2],
+					inputInt[0], inputInt[1]));
+			return true;
 		}
 		else 
 			return false;
 	}
+	
+	/******************************************************************
+	 * Private helper method that checks that dates are valid
+	 * 
+	 *****************************************************************/
+	private boolean checkDates(int month, int day, int year) {
+		boolean a = false;
+		boolean b = false;
+		boolean c = false;
+		if (year >= 2017 && year < 2099) {
+			a = true;
+			if(month > 0 && month < 13) {
+				b = true;
+				if (month == 1 && day > 31 || month == 1 && day < 0) {
+					JOptionPane.showMessageDialog(null, "For January,"
+							+ " please choose a day from 1 to 31.");
+				}else if (month == 2 && day > 28 || month == 2 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null, "For February,"
+							+ " please choose a day from 1 to 28.");
+				}else if (month == 3 && day > 31 || month == 3 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null, "For March,"
+							+ " please choose a day from 1 to 31.");
+				}else if (month == 4 && day > 30 || month == 4 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null, "For April,"
+							+ " please choose a day from 1 to 30.");
+				}else if (month == 5 && day > 31 || month == 5 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null, "For May,"
+							+ " please choose a day from 1 to 31.");
+				}else if (month == 6 && day > 30 || month == 6 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null, "For June,"
+							+ " please choose a day from 1 to 30.");
+				}else if (month == 7 && day > 31 || month == 7 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null, "For July,"
+							+ " please choose a day from 1 to 31.");
+				}else if (month == 8 && day > 31 || month == 8 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null, "For August,"
+							+ " please choose a day from 1 to 31.");
+				}else if (month == 9 && day > 30 || month == 9 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null,"For September,"
+							+ " please choose a day from 1 to 30.");
+				}else if (month == 10 && day > 31 || month == 10 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null, "For October,"
+							+ " please choose a day from 1 to 31.");
+				}else if (month == 11 && day > 30 || month == 11 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null, "For November,"
+							+ " please choose a day from 1 to 30.");
+				}else if (month == 12 && day > 31 || month == 12 &&
+						day < 0) {
+					JOptionPane.showMessageDialog(null, "For December,"
+							+ " please choose a day from 1 to 31.");
+				}else
+					c = true;
+			}else {
+			JOptionPane.showMessageDialog(null, "Please choose a month"
+					+ " from 1 to 12.");
+			return false;
+			}
+		}else {
+			JOptionPane.showMessageDialog(null, "Please choose a year"
+					+ " from 2017 to 2099.");
+			return false;
+			}
+		if (a == true && b == true && c == true) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
 	
 	
 	/******************************************************************

@@ -50,6 +50,9 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	
 	/* Month, Day, and Year */
 	private int month, day, year;
+	
+	/* Array of Booleans that are true if a site is occupied */
+	private boolean sites[];
 
 	/**********************************************************************
 	 * Constructor that sets up the Dialog with given parameters
@@ -95,6 +98,16 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		
 		//Sets closeStatus to false
 		closeStatus = false;
+		
+		//Allocates memory for 5 booleans
+		sites = new boolean[5];
+		
+		//Sets all booleans to false
+		sites[0] = false;
+		sites[1] = false;
+		sites[2] = false;
+		sites[3] = false;
+		sites[4] = false;
 		
 		//Instantiate Buttons
 		okButton.addActionListener(this);
@@ -146,15 +159,16 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		if (e.getSource() == okButton) {
 			if (check() == true) {
 				unit.setNameReserving(nameTxt.getText());
-				setCheckInDate();
 				setPower();
 				closeStatus = true;
-				checkFields();
+			if(checkAvailable(Integer.parseInt
+								(siteNumberTxt.getText())) == true) {
 				if (setCheckInDate() == true && checkFields() == true){
 					JOptionPane.showMessageDialog(null, "You Owe: $" + 
 					calcPriceRV(Integer.parseInt(stayingTxt.getText())));
 					dialog.dispose();
 				}
+				}	
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Please make sure "
@@ -188,7 +202,7 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	}
 	
 	/******************************************************************
-	 * Private helper method that checks ensures appropiate input is 
+	 * Private helper method that ensures appropriate input is 
 	 * entered into the textfields
 	 * 
 	 *****************************************************************/
@@ -197,7 +211,13 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		boolean b = true;
 		
 		try {
-			Integer.parseInt(siteNumberTxt.getText());
+			if (Integer.parseInt(siteNumberTxt.getText()) > 5 || 
+					Integer.parseInt(siteNumberTxt.getText()) < 0) {
+				a = false; 
+				JOptionPane.showMessageDialog(null, "Site number must"
+						+ " be from 1 to 5.");
+			}
+			
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null, "Site number must be"
 					+ " an integer. Please enter" + " an integer.");
@@ -231,6 +251,24 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 			return false;
 		}
 		}
+	
+	/******************************************************************
+	 * Private helper method that checks if a site is occupied, and if
+	 * it's not occupies it returns false and occupies the site
+	 * 
+	 *****************************************************************/
+	private boolean checkAvailable(int siteNum) {
+		int site = siteNum - 1;
+		if (sites[site] == false) {
+			sites[site] = true;
+			return true;
+		}else {
+			JOptionPane.showMessageDialog(null, "Site " + siteNum + 
+					" is already occupied. Try another site.");
+			return false;
+		}
+		
+	}
 	
 	/******************************************************************
 	 * Private helper method that calculates the price of renting
@@ -276,9 +314,10 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 			}
 			
 		}
-		if(a = true && checkDates(inputInt[0], inputInt[1], inputInt[2]) == true) {
-		unit.setCheckIn(new GregorianCalendar(inputInt[2], inputInt[0],
-				inputInt[1]));
+		if(a = true && checkDates(inputInt[0], inputInt[1],
+				inputInt[2]) == true) {
+		unit.setCheckIn(new GregorianCalendar(inputInt[2],
+				inputInt[0], inputInt[1]));
 		return true;
 		}
 		else { 
