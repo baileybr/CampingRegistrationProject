@@ -7,11 +7,11 @@ import java.util.GregorianCalendar;
 
 import javax.swing.*;
 
-/**********************************************************************
+/***********************************************************************
  * Class that creates the JDialog Box when checking in to an RV site
  * 
  * @author Brendan Bailey
- *********************************************************************/
+ **********************************************************************/
 public class DialogCheckInRv extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
@@ -54,15 +54,15 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 	/**********************************************************************
 	 * Constructor that sets up the Dialog with given parameters
 	 * 
-	 * @param paOccupy is the frame for the JDialog, d is the RV being
-	 * checked in
+	 * @param paOccupy is the frame for the JDialog
+	 * @param d is the RV being checked in
 	 *********************************************************************/
 	public DialogCheckInRv(JFrame paOccupy, RV d) {	
 		unit = d; 
 		
 		//Creates Gregorian Calendar
 		gCalenderCheckIn = new GregorianCalendar();
-		month = gCalenderCheckIn.get(GregorianCalendar.MONTH);
+		month = gCalenderCheckIn.get(GregorianCalendar.MONTH) + 1;
 		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
 		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
 		
@@ -136,21 +136,22 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		dialog.setVisible(true);
 	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Handles the actions of the buttons
 	 * 
 	 * @param e is an ActionEvent that determines the action
-	 *****************************************************************/
+	 ******************************************************************/
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
-			if (check() == true) {
-				unit.setNameReserving(nameTxt.getText());
-				setCheckInDate();
-				setPower();
-				closeStatus = true;
+			if (check()) {
 				checkFields();
+				closeStatus = true;
 			}
-			
+			else {
+				JOptionPane.showMessageDialog(null, "There are empty "
+						+ "fields. Please populate all "
+						+ "fields with values");
+			}
 		}
 		else if (e.getSource() == cancelButton) {
 			dialog.dispose();
@@ -158,133 +159,135 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		
 	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that checks if every text field has
 	 * input
 	 * 
 	 * @return check is true if all textfields have input, false if
 	 * not
-	 *****************************************************************/
+	 ******************************************************************/
 	private boolean check() {
-		boolean check = false;
 		if (nameTxt.getText().length() > 0 &&
 				siteNumberTxt.getText().length() > 0 && 
 				occupyedOnTxt.getText().length() > 0 && 
 				stayingTxt.getText().length() > 0) {
-
-			check = true;
+			return true;
 		}
-		return check;
+		
+		return false;
 	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that checks if textfields that require
 	 * an int, have them. If this is the case, it closes the dialog
-	 * 
-	 *****************************************************************/
+	 ******************************************************************/
 	private void checkFields() {
-		boolean a = true;
-		boolean b = true;
+		boolean isValid = true;
+		int siteNum = 0, daysStaying = 0;
 		
 		try {
-			Integer.parseInt(siteNumberTxt.getText());
+			siteNum = Integer.parseInt(siteNumberTxt.getText());
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null, "Site number must be"
 					+ " an integer. Please enter" + " an integer.");
-			a = false;
+			isValid = false;
 		}
 		
 		try {
-			Integer.parseInt(stayingTxt.getText());
+			daysStaying = Integer.parseInt(stayingTxt.getText());
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null, "Days staying must be"
 					+ " an integer. Please enter" + " an integer.");
-			b = false;
+			isValid = false;
 		}
 		
-		if (a == true && b == true) {
-			if(Integer.parseInt(siteNumberTxt.getText()) > 0 &&
-					Integer.parseInt(stayingTxt.getText()) > 0) {
-			unit.setSiteNumber(Integer.parseInt
-					(siteNumberTxt.getText()));
-			unit.setDaysStaying(Integer.parseInt
-					(stayingTxt.getText()));
-			JOptionPane.showMessageDialog(null, "You Owe: $" + 
-					calcPriceRV(Integer.parseInt(stayingTxt.getText())));
-			dialog.dispose();
+		if (isValid) {
+			try {
+				unit = new RV(nameTxt.getText(),
+							  getCheckInDate(),
+							  siteNum,
+							  daysStaying,
+							  getPowerFromView());
+				
+				JOptionPane.showMessageDialog(null, "You Owe: $" + 
+						calcPriceRV());
+				
+				dialog.dispose();
 			}
-			else
-				JOptionPane.showMessageDialog(null, "Please make sure all "
-						+ "inputs are greater than 0.");
-		}
-			
-		}
+			catch (Exception ex) {
+				JOptionPane.showMessageDialog(null, ex.getMessage());
+			}
+		}	
+	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that calculates the price of renting
 	 * an RV site
 	 * 
 	 * @return cost is the cost of renting the site
-	 *****************************************************************/
-	private double calcPriceRV(int daysStaying) {
-		double cost = daysStaying * 30;
-		return cost;
-		}
+	 ******************************************************************/
+	private double calcPriceRV() {
+		return unit.getDaysStaying() * 30;
+	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 
-	 * into a GregorianCalender and then calls the set Method from 
-	 * the Site class
+	 * into a GregorianCalender 
 	 * 
-	 *****************************************************************/
-	private void setCheckInDate() {
+	 * @return GregorianCalendar that matches what was typed in
+	 ******************************************************************/
+	private GregorianCalendar getCheckInDate() {
 		String input[] = occupyedOnTxt.getText().split("/");
 		int inputInt[] = new int[input.length];
 
-		if (!input[0].isEmpty()) {
-			for (int i = 0; i < input.length; i++) {
-				inputInt[i] = Integer.parseInt(input[i].trim());
+		if (input.length == 3) {
+			try {
+				for (int i = 0; i < input.length; i++) {
+					inputInt[i] = Integer.parseInt(input[i].trim());
+				}
 			}
+			catch (NumberFormatException ex) {
+				return null;
+			}
+			
+			return new GregorianCalendar(inputInt[2], inputInt[0],
+					inputInt[1]);
 		}
-
-		unit.setCheckIn(new GregorianCalendar(inputInt[2], inputInt[0],
-				inputInt[1]));
+		else {
+			return null;
+		}
 	}
 	
-	/******************************************************************
-	 * Private helper method that sets the power in the RV class
-	 * 
-	 *****************************************************************/
-	private void setPower() {
+	/*******************************************************************
+	 * Private helper method that gets the power from the view
+	 ******************************************************************/
+	private int getPowerFromView() {
 		if (powerBox.getSelectedItem().equals("30")) {
-			unit.setPower(30);
+			return 30;
 		} else if (powerBox.getSelectedItem().equals("40")) {
-			unit.setPower(40);
+			return 40;
 		} else {
-			unit.setPower(50);
+			return 50;
 		}
 	}
 	
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Getter method for unit
 	 * 
 	 * @return unit is the current RV
-	 *****************************************************************/
+	 ******************************************************************/
 	public RV getRV() {
 		return unit;
 	}
 
-	/******************************************************************
+	/*******************************************************************
 	 * Getter method for closeStatus
 	 * 
 	 * @return closeStatus is a boolean that changes when the 
 	 * JDialog is finished
-	 *****************************************************************/
+	 ******************************************************************/
 	public boolean getCloseStatus() {
 		return closeStatus;
 	}
-	
-	
-
 }

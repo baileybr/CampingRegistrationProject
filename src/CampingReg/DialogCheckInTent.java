@@ -14,11 +14,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-/**********************************************************************
+/***********************************************************************
  * Class that creates the JDialog Box when checking in to an Tent site
  * 
  * @author Brendan Bailey
- *********************************************************************/
+ **********************************************************************/
 public class DialogCheckInTent extends JDialog implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
@@ -55,18 +55,18 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	/* Month, Day, and Year */
 	private int month, day, year;
 
-	/**********************************************************************
+	/*******************************************************************
 	 * Constructor that sets up the Dialog with given parameters
 	 * 
-	 * @param paOccupy is the frame for the JDialog, d is the Tent being
-	 * checked in
-	 *********************************************************************/
+	 * @param paOccupy is the frame for the JDialog
+	 * @param d is the Tent being checked in
+	 ******************************************************************/
 	public DialogCheckInTent(JFrame paOccupy, Tent d) {	
 		unit = d; 
 		
 		//Creates Gregorian Calendar
 		gCalenderCheckIn = new GregorianCalendar();
-		month = gCalenderCheckIn.get(GregorianCalendar.MONTH);
+		month = gCalenderCheckIn.get(GregorianCalendar.MONTH) + 1;
 		day = gCalenderCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
 		year = gCalenderCheckIn.get(GregorianCalendar.YEAR);
 		
@@ -133,151 +133,153 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		dialog.setVisible(true);
 	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Handles the actions of the buttons
 	 * 
 	 * @param e is an ActionEvent that determines the action
-	 *****************************************************************/
+	 ******************************************************************/
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
-			if (check() == true) {
-				unit.setNameReserving(nameTxt.getText());
-				setCheckInDate();
-				closeStatus = true;
+			if (check()) {
 				checkFields();
+				closeStatus = true;
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "There are empty "
+										+ "fields. Please populate all "
+										+ "fields with values");
 			}
 		}
 		else if (e.getSource() == cancelButton) {
 			dialog.dispose();
 		}
-		
 	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that checks if every text field has
 	 * input
 	 * 
 	 * @return check is true if all textfields have input, false if
 	 * not
-	 *****************************************************************/
+	 ******************************************************************/
 	private boolean check() {
-		boolean check = false;
 		if (nameTxt.getText().length() > 0 &&
 				siteNumberTxt.getText().length() > 0 && 
 				occupyedOnTxt.getText().length() > 0 && 
 				stayingTxt.getText().length() > 0 && 
 				tentersTxt.getText().length() > 0)  {
-
-			check = true;
+			return true;
 		}
-		return check;
+		
+		return false;
 	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that checks if textfields that require
 	 * an int, have them. If this is the case, it closes the dialog and
-	 * displays the cost 
-	 * 
-	 *****************************************************************/
+	 * displays the cost
+	 ******************************************************************/
 	private void checkFields() {
-		boolean a = true;
-		boolean b = true;
-		boolean c = true;
+		boolean isValid = true;
+		int siteNum = 0, daysStaying = 0, tenters = 0;
 		
 		try {
-			Integer.parseInt(siteNumberTxt.getText());
+			siteNum = Integer.parseInt(siteNumberTxt.getText());
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null, "Site number must be"
-					+ " an integer. Please enter" + " an integer.");
-			a = false;
+					+ " an integer. Please enter an integer.");
+			isValid = false;
 		}
 		
 		try {
-			Integer.parseInt(stayingTxt.getText());
+			daysStaying = Integer.parseInt(stayingTxt.getText());
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null, "Days staying must be"
-					+ " an integer. Please enter" + " an integer.");
-			b = false;
+					+ " an integer. Please enter an integer.");
+			isValid = false;
 		}
 		
 		try {
-			Integer.parseInt(tentersTxt.getText());
+			tenters = Integer.parseInt(tentersTxt.getText());
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null,"Number of tenters must"
-					+ " be an integer. Please enter" + " an integer.");
-			c = false;
+					+ " be an integer. Please enter an integer.");
+			isValid = false;
 		}
 		
-		if (a == true && b == true && c == true) {
-			if(Integer.parseInt(siteNumberTxt.getText()) > 0 &&
-					Integer.parseInt(stayingTxt.getText()) > 0 &&
-					Integer.parseInt(tentersTxt.getText()) > 0) {
-			unit.setSiteNumber(Integer.parseInt
-					(siteNumberTxt.getText()));
-			unit.setDaysStaying(Integer.parseInt
-					(stayingTxt.getText()));
-			unit.setNumOfTenters(Integer.parseInt
-					(tentersTxt.getText()));
-			JOptionPane.showMessageDialog(null, "You Owe: $" + 
-					calcPriceTent(Integer.parseInt(stayingTxt.getText())));
-			dialog.dispose();
+		if (isValid) {
+			try {
+				unit = new Tent(nameTxt.getText(),
+								getCheckInDate(),
+								siteNum,
+								daysStaying,
+								tenters);
+				
+				JOptionPane.showMessageDialog(null, "You Owe: $" + 
+						calcPriceTent());
+				
+				dialog.dispose();
 			}
-			else
-				JOptionPane.showMessageDialog(null, "Please make sure "
-						+ "all inputs are greater than 0.");
-		}
-			
+			catch (Exception ex) {
+				JOptionPane.showMessageDialog(null, ex.getMessage());
+			}
+		}	
 	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that calculates the price of renting
 	 * an Tent site
 	 * 
 	 * @return cost is the cost of renting the site
-	 *****************************************************************/
-	private double calcPriceTent(int daysStaying) {
-		double cost = (daysStaying * 3 * unit.getNumOfTenters());
-		return cost;
-		}
+	 ******************************************************************/
+	private double calcPriceTent() {
+		return unit.getDaysStaying() * 3 * unit.getNumOfTenters();
+	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 
-	 * into a GregorianCalender and then calls the set Method from 
-	 * the Site class
+	 * into a GregorianCalender 
 	 * 
-	 *****************************************************************/
-	private void setCheckInDate() {
+	 * @return GregorianCalendar that matches what was typed in
+	 ******************************************************************/
+	private GregorianCalendar getCheckInDate() {
 		String input[] = occupyedOnTxt.getText().split("/");
 		int inputInt[] = new int[input.length];
 
-		if (!input[0].isEmpty()) {
-			for (int i = 0; i < input.length; i++) {
-				inputInt[i] = Integer.parseInt(input[i].trim());
+		if (input.length == 3) {
+			try {
+				for (int i = 0; i < input.length; i++) {
+					inputInt[i] = Integer.parseInt(input[i].trim());
+				}
 			}
+			catch (NumberFormatException ex) {
+				return null;
+			}
+			
+			return new GregorianCalendar(inputInt[2], inputInt[0],
+					inputInt[1]);
 		}
-
-		unit.setCheckIn(new GregorianCalendar(inputInt[2], inputInt[0],
-				inputInt[1]));
+		else {
+			return null;
+		}
 	}
 	
-	
-	/******************************************************************
+	/*******************************************************************
 	 * Getter method for unit
 	 * 
 	 * @return unit is the current RV
-	 *****************************************************************/
+	 ******************************************************************/
 	public Tent getTent() {
 		return unit;
 	}
 
-	/******************************************************************
+	/*******************************************************************
 	 * Getter method for closeStatus
 	 * 
 	 * @return closeStatus is a boolean that changes when the 
 	 * JDialog is finished
-	 *****************************************************************/
+	 ******************************************************************/
 	public boolean getCloseStatus() {
 		return closeStatus;
 	}
-	
 }

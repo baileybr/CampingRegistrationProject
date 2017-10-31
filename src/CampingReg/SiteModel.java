@@ -1,12 +1,15 @@
 package CampingReg;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,13 +87,7 @@ public class SiteModel extends AbstractTableModel {
 			case 0:
 				return sites.get(rowIndex).getNameReserving();
 			case 1:
-				GregorianCalendar temp = sites.get(rowIndex).getCheckIn();
-				
-				String retVal = (temp.get(GregorianCalendar.MONTH))
-					+ "/" + (temp.get(GregorianCalendar.DAY_OF_MONTH))
-					+ "/" + (temp.get(GregorianCalendar.YEAR));
-				
-				return retVal;
+				return sites.get(rowIndex).getCheckInAsString();
 			case 2:
 				return sites.get(rowIndex).getDaysStaying();
 			case 3:
@@ -162,12 +159,78 @@ public class SiteModel extends AbstractTableModel {
 		}
 	}
 	
-	public void saveText() {
-		
+	public void saveText(String filename) {
+		try {
+			File file = new File(filename);
+			PrintWriter pw = new PrintWriter(file);
+			
+			for (int i = 0; i < sites.size(); i++) {
+				String info = "";
+				if (sites.get(i) instanceof RV) {
+					info = Integer.toString(((RV)sites.get(i)).getPower());
+				}
+				else {
+					info = Integer.toString(((Tent)sites.get(i)).getNumOfTenters());
+				}
+				
+				pw.write(sites.get(i).getClass() + "," +
+						sites.get(i).getNameReserving() + "," +
+						sites.get(i).getCheckInAsString() + "," +
+						sites.get(i).getDaysStaying() + "," +
+						sites.get(i).getSiteNumber() + "," +
+						info + "\n");
+			}
+			
+			pw.close();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
 	}
 	
-	public void loadText() {
-		
+	public void loadText(String filename) {
+		try {
+			File file = new File(filename);
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			
+			sites.clear();
+			
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] items = line.split(",");
+				
+				// TODO: Rewrite this to include validation
+				if (items.length == 6) {
+					GregorianCalendar date = new GregorianCalendar();
+					String[] parsedDate = items[2].split("/");
+					date.set(GregorianCalendar.MONTH, Integer.parseInt(parsedDate[0]));
+					date.set(GregorianCalendar.DAY_OF_MONTH, Integer.parseInt(parsedDate[1]));
+					date.set(GregorianCalendar.YEAR, Integer.parseInt(parsedDate[2]));
+					
+					if (items[0].indexOf("RV") > -1) {
+						sites.add(new RV(items[1], 
+								date, 
+								Integer.parseInt(items[3]), 
+								Integer.parseInt(items[4]), 
+								Integer.parseInt(items[5])));
+					}
+					else if (items[0].indexOf("Tent") > -1) {
+						sites.add(new Tent(items[1], 
+								date, 
+								Integer.parseInt(items[3]), 
+								Integer.parseInt(items[4]), 
+								Integer.parseInt(items[5])));
+					}
+				}
+				else {
+					throw new Exception("File was corrupted and could not be loaded");
+				}
+			}
+			
+			refresh();
+			
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
 	}
 	
 	private void refresh() {
