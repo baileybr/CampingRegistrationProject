@@ -7,105 +7,105 @@ import java.util.GregorianCalendar;
 
 import javax.swing.*;
 
-/**********************************************************************
+/***********************************************************************
  * Class that creates the JDialog Box when checking in to an RV site
  * 
  * @author Brendan Bailey
- *********************************************************************/
+ **********************************************************************/
 public class DialogCheckInRv extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	/* JTextFields */
 	private JTextField nameTxt, occupyedOnTxt, stayingTxt, 
 	siteNumberTxt;
-	
+
 	/* JComboBox */
 	private JComboBox<String> powerBox;
-	
+
 	/* JButtons */
 	private JButton okButton, cancelButton;
-	
+
 	/* Close Status */
 	private boolean closeStatus;
-	
+
 	/* RV object */
 	private RV unit;  
-	
+
 	/* JLabels */
 	private JLabel nameLabel, occupyingLabel, stayingLabel, siteLabel,
 	powerLabel;
-	
+
 	/* Gregorian Calendar */
 	private GregorianCalendar gCalendarCheckIn;
-	
+
 	/* JDialog */
 	private JDialog dialog;
-	
+
 	/* JFrame */
 	private JFrame parentFrame;
-	
+
 	/* JPanel */
 	private JPanel panel;
-	
+
 	/* Month, Day, and Year */
 	private int month, day, year;
-	
+
 
 	/**********************************************************************
 	 * Constructor that sets up the Dialog with given parameters
 	 * 
-	 * @param paOccupy is the frame for the JDialog, d is the RV being
-	 * checked in
+	 * @param paOccupy is the frame for the JDialog
+	 * @param d is the RV being checked in
 	 *********************************************************************/
 	public DialogCheckInRv(JFrame paOccupy, RV d) {	
 		unit = d; 
-		
+
 		//Creates Gregorian Calendar
 		gCalendarCheckIn = new GregorianCalendar();
 		gCalendarCheckIn.setLenient(false);
 		month = gCalendarCheckIn.get(GregorianCalendar.MONTH) + 1;
 		day = gCalendarCheckIn.get(GregorianCalendar.DAY_OF_MONTH);
 		year = gCalendarCheckIn.get(GregorianCalendar.YEAR);
-		
+
 		//Creates JDialog
 		dialog = new JDialog();
-		
+
 		//Creates JTextFields
 		nameTxt = new JTextField(d.getNameReserving());
 		occupyedOnTxt = new JTextField(month + "/" + day + "/" + year);
 		stayingTxt = new JTextField(d.getDaysStaying());
 		siteNumberTxt = new JTextField(d.getSiteNumber());
-		
+
 		//Creates JComboBox
 		powerBox = new JComboBox<String>();
-		
+
 		//Creates JButtons
 		okButton = new JButton("Ok");
 		cancelButton = new JButton("Cancel");
-		
+
 		//Creates JLabels
 		nameLabel = new JLabel("Name of Reserver:");
 		occupyingLabel = new JLabel("Occupied On Date:");
 		stayingLabel = new JLabel("Days Staying:");
 		siteLabel = new JLabel("Requested Site Number:");
 		powerLabel = new JLabel("Power in AMPS:");
-		
+
 		//Creates Frame
 		parentFrame = paOccupy;
-		
+
 		//Sets closeStatus to false
 		closeStatus = false;
-		
+
 		//Instantiate Buttons
 		okButton.addActionListener(this);
 		cancelButton.addActionListener(this);
-		
+
 		//Adds Items to powerBox
 		powerBox.addItem("30");
 		powerBox.addItem("40");
 		powerBox.addItem("50");
-		
+
 		//Creates JPanel and adds on items
 		panel = new JPanel();
 		panel.add(nameLabel);
@@ -122,13 +122,13 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		panel.add(Box.createVerticalStrut(5));
 		panel.add(okButton);
 		panel.add(cancelButton);
-		
+
 		//Sets the layout of panel
 		panel.setLayout(new GridLayout(7, 2));
-		
+
 		//Adds the panel to the JDialog
 		dialog.add(panel);
-		
+
 		//Sets specifics for JDialog
 		dialog.setLocationRelativeTo(parentFrame);
 		dialog.setModal(true);
@@ -137,275 +137,221 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		dialog.setSize(350, 250);
 		dialog.setVisible(true);
 	}
-	
-	/******************************************************************
+
+	/*******************************************************************
 	 * Handles the actions of the buttons
 	 * 
 	 * @param e is an ActionEvent that determines the action
-	 *****************************************************************/
+	 ******************************************************************/
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
-			if (check() == true) {
-				unit.setNameReserving(nameTxt.getText());
-				setPower();
+			if (check()) {
+				checkFields();
 				closeStatus = true;
-				if (setCheckInDate() == true && checkFields() == true){
-					JOptionPane.showMessageDialog(null, "You Owe: $" + 
-					calcPriceRV(Integer.parseInt
-							(stayingTxt.getText())));
-					dialog.dispose();
-				}	
 			}
 			else {
-				JOptionPane.showMessageDialog(null, "Please make sure "
-						+ "all fields are filled in.");
+				JOptionPane.showMessageDialog(null, "There are empty "
+						+ "fields. Please populate all "
+						+ "fields with values");
 			}
-			
 		}
 		else if (e.getSource() == cancelButton) {
 			dialog.dispose();
 		}
-		
+
 	}
-	
-	/******************************************************************
+
+	/*******************************************************************
 	 * Private helper method that checks if every text field has
 	 * input
 	 * 
 	 * @return check is true if all textfields have input, false if
 	 * not
-	 *****************************************************************/
+	 ******************************************************************/
 	private boolean check() {
-		boolean check = false;
 		if (nameTxt.getText().length() > 0 &&
 				siteNumberTxt.getText().length() > 0 && 
 				occupyedOnTxt.getText().length() > 0 && 
 				stayingTxt.getText().length() > 0) {
-
-			check = true;
+			return true;
 		}
-		return check;
+
+		return false;
 	}
-	
-	/******************************************************************
-	 * Private helper method that ensures appropriate input is 
-	 * entered into the textfields
-	 * 
-	 *****************************************************************/
-	private boolean checkFields() {
-		boolean a = true;
-		boolean b = true;
-		
+
+	/*******************************************************************
+	 * Private helper method that checks if textfields that require
+	 * an int, have them. If this is the case, it closes the dialog
+	 ******************************************************************/
+	private void checkFields() {
+		boolean isValid = true;
+		int siteNum = 0, daysStaying = 0;
+
 		try {
-			if (Integer.parseInt(siteNumberTxt.getText()) > 5 || 
-					Integer.parseInt(siteNumberTxt.getText()) < 0) {
-				a = false; 
-				JOptionPane.showMessageDialog(null, "Site number must"
-						+ " be from 1 to 5.");
-			}
-			
+			siteNum = Integer.parseInt(siteNumberTxt.getText());
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null, "Site number must be"
 					+ " an integer. Please enter" + " an integer.");
-			a = false;
+			isValid = false;
 		}
-		
+
 		try {
-			Integer.parseInt(stayingTxt.getText());
+			daysStaying = Integer.parseInt(stayingTxt.getText());
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null, "Days staying must be"
 					+ " an integer. Please enter" + " an integer.");
-			b = false;
+			isValid = false;
 		}
-		
-		if (a == true && b == true) {
-			if(Integer.parseInt(siteNumberTxt.getText()) > 0 &&
-					Integer.parseInt(stayingTxt.getText()) > 0) {
-			unit.setSiteNumber(Integer.parseInt
-					(siteNumberTxt.getText()));
-			unit.setDaysStaying(Integer.parseInt
-					(stayingTxt.getText()));
-			return true;
+
+		if (isValid) {
+			try {
+				unit = new RV(nameTxt.getText(),
+						getCheckInDate(),
+						siteNum,
+						daysStaying,
+						getPowerFromView());
+
+				JOptionPane.showMessageDialog(null, "You Owe: $" + 
+						calcPriceRV());
+
+				dialog.dispose();
 			}
-			else {
-				JOptionPane.showMessageDialog(null, "Please make sure all "
-						+ "inputs are greater than 0.");
-			return false;
+			catch (Exception ex) {
+				if (!ex.getMessage().equals("Don't show")) {
+					JOptionPane.showMessageDialog(null, ex.getMessage());
+				}
 			}
-		}
-		else { 
-			return false;
-		}
-		}
-	
-	/******************************************************************
+		}	
+	}
+
+	/*******************************************************************
 	 * Private helper method that calculates the price of renting
 	 * an RV site
 	 * 
 	 * @return cost is the cost of renting the site
-	 *****************************************************************/
-	private double calcPriceRV(int daysStaying) {
-		double cost = daysStaying * 30;
-		return cost;
-		}
-	
-	/******************************************************************
+	 ******************************************************************/
+	private double calcPriceRV() {
+		return unit.getDaysStaying() * 30;
+	}
+
+	/*******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 
-	 * into a GregorianCalender and then calls the set Method from 
-	 * the Site class
+	 * into a GregorianCalender 
 	 * 
-	 *****************************************************************/
-	private boolean setCheckInDate() {
-		boolean a = true;
+	 * @return GregorianCalendar that matches what was typed in
+	 ******************************************************************/
+	private GregorianCalendar getCheckInDate() {
 		String input[] = occupyedOnTxt.getText().split("/");
 		int inputInt[] = new int[input.length];
 
-		if (!input[0].isEmpty()) {
-			if (input.length == 3) {
-			for (int i = 0; i < input.length; i++) {
-				try {
-				inputInt[i] = Integer.parseInt(input[i].trim());
-				}catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(null, "Please enter"
-							+ " the date"
-							+ " in the correct format, mm/dd/yyyy");
-					a = false;
-					return false;
-					}
+		if (input.length == 3) {
+			try {
+				for (int i = 0; i < input.length; i++) {
+					inputInt[i] = Integer.parseInt(input[i].trim());
+				}
 			}
-			
-			}else {
-			JOptionPane.showMessageDialog(null, "Please enter the date"
-					+ " in the correct format, mm/dd/yyyy");
-			a = false;
-			return false;
+			catch (NumberFormatException ex) {
+				return null;
 			}
-			
+
+			if (checkDates(inputInt[0], inputInt[1], inputInt[2])) {
+				return new GregorianCalendar(inputInt[2], inputInt[0],
+						inputInt[1]);
+			}
 		}
-		if(a = true && checkDates(inputInt[0], inputInt[1],
-				inputInt[2]) == true) {
-		unit.setCheckIn(new GregorianCalendar(inputInt[2],
-				inputInt[0], inputInt[1]));
-		return true;
-		}
-		else { 
-			return false;
-		}	
+
+		return null;
 	}
-	
+
 	/******************************************************************
 	 * Private helper method that checks that dates are valid
-	 * 
 	 *****************************************************************/
 	private boolean checkDates(int month, int day, int year) {
-		boolean a = false;
-		boolean b = false;
-		boolean c = false;
-		if (year >= 2017 && year < 2099) {
-			a = true;
-			if(month > 0 && month < 13) {
-				b = true;
-				if (month == 1 && day > 31 || month == 1 && day < 0) {
-					JOptionPane.showMessageDialog(null, "For January,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 2 && day > 28 || month == 2 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For February,"
-							+ " please choose a day from 1 to 28.");
-				}else if (month == 3 && day > 31 || month == 3 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For March,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 4 && day > 30 || month == 4 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For April,"
-							+ " please choose a day from 1 to 30.");
-				}else if (month == 5 && day > 31 || month == 5 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For May,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 6 && day > 30 || month == 6 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For June,"
-							+ " please choose a day from 1 to 30.");
-				}else if (month == 7 && day > 31 || month == 7 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For July,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 8 && day > 31 || month == 8 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For August,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 9 && day > 30 || month == 9 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null,"For September,"
-							+ " please choose a day from 1 to 30.");
-				}else if (month == 10 && day > 31 || month == 10 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For October,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 11 && day > 30 || month == 11 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For November,"
-							+ " please choose a day from 1 to 30.");
-				}else if (month == 12 && day > 31 || month == 12 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For December,"
-							+ " please choose a day from 1 to 31.");
-				}else
-					c = true;
-			}else {
-			JOptionPane.showMessageDialog(null, "Please choose a month"
-					+ " from 1 to 12.");
-			return false;
-			}
-		}else {
+		String[] months = {null, "January", "February", "March",
+				"April", "May", "June", "July", "August", 
+				"September", "October", "November", 
+		"December"};
+
+		if (year < 2017 || year >= 2099) {
 			JOptionPane.showMessageDialog(null, "Please choose a year"
 					+ " from 2017 to 2099.");
+
 			return false;
+		}
+
+		if (month <= 0 || month > 12) {
+			JOptionPane.showMessageDialog(null, "Please choose a month"
+					+ " from 1 to 12.");
+
+			return false;
+		}
+
+		switch (month) {
+		case 1:
+		case 3:
+		case 5:
+		case 7:
+		case 8:
+		case 10:
+		case 12:
+			if (day < 1 || day > 31) {
+				JOptionPane.showMessageDialog(null, "For " + months[month]
+						+ ", please choose a day from 1 to 31.");
+
+				return false;
 			}
-		if (a == true && b == true && c == true) {
+
 			return true;
-		}else {
+		case 4:
+		case 6:
+		case 9:
+		case 11:
+			if (day < 1 || day > 30) {
+				JOptionPane.showMessageDialog(null, "For " + months[month]
+						+ ", please choose a day from 1 to 30.");
+
+				return false;
+			}
+
+			return true;
+		case 2:
+			if (day < 1 || day > 28) {
+				JOptionPane.showMessageDialog(null, "For " + months[month]
+						+ ", please choose a day from 1 to 28.");
+
+				return false;
+			}
+
+			return true;
+		default:
 			return false;
 		}
 	}
-	
-	
-	/******************************************************************
-	 * Private helper method that sets the power in the RV class
-	 * 
-	 *****************************************************************/
-	private void setPower() {
-		if (powerBox.getSelectedItem().equals("30")) {
-			unit.setPower(30);
-		} else if (powerBox.getSelectedItem().equals("40")) {
-			unit.setPower(40);
-		} else {
-			unit.setPower(50);
-		}
+
+	/*******************************************************************
+	 * Private helper method that gets the power from the view
+	 ******************************************************************/
+	private int getPowerFromView() {
+		return Integer.parseInt(powerBox.getSelectedItem().toString());
 	}
-	
-	
-	/******************************************************************
+
+
+	/*******************************************************************
 	 * Getter method for unit
 	 * 
 	 * @return unit is the current RV
-	 *****************************************************************/
+	 ******************************************************************/
 	public RV getRV() {
 		return unit;
 	}
 
-	/******************************************************************
+	/*******************************************************************
 	 * Getter method for closeStatus
 	 * 
 	 * @return closeStatus is a boolean that changes when the 
 	 * JDialog is finished
-	 *****************************************************************/
+	 ******************************************************************/
 	public boolean getCloseStatus() {
 		return closeStatus;
 	}
-	
-	
-
 }

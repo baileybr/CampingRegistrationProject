@@ -14,11 +14,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-/**********************************************************************
+/***********************************************************************
  * Class that creates the JDialog Box when checking in to an Tent site
  * 
  * @author Brendan Bailey
- *********************************************************************/
+ **********************************************************************/
 public class DialogCheckInTent extends JDialog implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
@@ -55,12 +55,12 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	/* Month, Day, and Year */
 	private int month, day, year;
 
-	/**********************************************************************
+	/*******************************************************************
 	 * Constructor that sets up the Dialog with given parameters
 	 * 
-	 * @param paOccupy is the frame for the JDialog, d is the Tent being
-	 * checked in
-	 *********************************************************************/
+	 * @param paOccupy is the frame for the JDialog
+	 * @param d is the Tent being checked in
+	 ******************************************************************/
 	public DialogCheckInTent(JFrame paOccupy, Tent d) {	
 		unit = d; 
 		
@@ -134,259 +134,221 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 		dialog.setVisible(true);
 	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Handles the actions of the buttons
 	 * 
 	 * @param e is an ActionEvent that determines the action
-	 *****************************************************************/
+	 ******************************************************************/
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == okButton) {
-			if (check() == true) {
-				unit.setNameReserving(nameTxt.getText());
+			if (check()) {
+				checkFields();
 				closeStatus = true;
-				if (setCheckInDate() == true && checkFields() == true){
-					JOptionPane.showMessageDialog(null, "You Owe: $" + 
-					calcPriceTent(Integer.parseInt(stayingTxt.getText())));
-					dialog.dispose();
-				}
-			}else {
-				JOptionPane.showMessageDialog(null, "Please make sure "
-						+ "all fields are filled in.");
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "There are empty "
+										+ "fields. Please populate all "
+										+ "fields with values");
 			}
 		}
 		else if (e.getSource() == cancelButton) {
 			dialog.dispose();
 		}
-		
 	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that checks if every text field has
 	 * input
 	 * 
 	 * @return check is true if all textfields have input, false if
 	 * not
-	 *****************************************************************/
+	 ******************************************************************/
 	private boolean check() {
-		boolean check = false;
 		if (nameTxt.getText().length() > 0 &&
 				siteNumberTxt.getText().length() > 0 && 
 				occupyedOnTxt.getText().length() > 0 && 
 				stayingTxt.getText().length() > 0 && 
 				tentersTxt.getText().length() > 0)  {
-
-			check = true;
+			return true;
 		}
-		return check;
+		
+		return false;
 	}
 	
-	/******************************************************************
-	 * Private helper method that ensures appropriate input is 
-	 * entered into the textfields
-	 * 
-	 *****************************************************************/
-	private boolean checkFields() {
-		boolean a = true;
-		boolean b = true;
-		boolean c = true;
+	/*******************************************************************
+	 * Private helper method that checks if textfields that require
+	 * an int, have them. If this is the case, it closes the dialog and
+	 * displays the cost
+	 ******************************************************************/
+	private void checkFields() {
+		boolean isValid = true;
+		int siteNum = 0, daysStaying = 0, tenters = 0;
 		
 		try {
-			Integer.parseInt(siteNumberTxt.getText());
+			siteNum = Integer.parseInt(siteNumberTxt.getText());
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null, "Site number must be"
-					+ " an integer. Please enter" + " an integer.");
-			a = false;
+					+ " an integer. Please enter an integer.");
+			isValid = false;
 		}
 		
 		try {
-			Integer.parseInt(stayingTxt.getText());
+			daysStaying = Integer.parseInt(stayingTxt.getText());
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null, "Days staying must be"
-					+ " an integer. Please enter" + " an integer.");
-			b = false;
+					+ " an integer. Please enter an integer.");
+			isValid = false;
 		}
 		
 		try {
-			Integer.parseInt(tentersTxt.getText());
+			tenters = Integer.parseInt(tentersTxt.getText());
 		} catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(null,"Number of tenters must"
-					+ " be an integer. Please enter" + " an integer.");
-			c = false;
+					+ " be an integer. Please enter an integer.");
+			isValid = false;
 		}
 		
-		if (a == true && b == true && c == true) {
-			if(Integer.parseInt(siteNumberTxt.getText()) > 0 &&
-					Integer.parseInt(stayingTxt.getText()) > 0 &&
-					Integer.parseInt(tentersTxt.getText()) > 0) {
-			unit.setSiteNumber(Integer.parseInt
-					(siteNumberTxt.getText()));
-			unit.setDaysStaying(Integer.parseInt
-					(stayingTxt.getText()));
-			unit.setNumOfTenters(Integer.parseInt
-					(tentersTxt.getText()));
-			return true;
+		if (isValid) {
+			try {
+				unit = new Tent(nameTxt.getText(),
+								getCheckInDate(),
+								siteNum,
+								daysStaying,
+								tenters);
+				
+				JOptionPane.showMessageDialog(null, "You Owe: $" + 
+						calcPriceTent());
+				
+				dialog.dispose();
 			}
-			else {
-				JOptionPane.showMessageDialog(null, "Please make sure "
-						+ "all inputs are greater than 0.");
-			return false;
+			catch (Exception ex) {
+				if (!ex.getMessage().equals("Don't show")) {
+					JOptionPane.showMessageDialog(null, ex.getMessage());
+				}
 			}
-		}
-			return false;
-			
+		}	
 	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that calculates the price of renting
 	 * an Tent site
 	 * 
 	 * @return cost is the cost of renting the site
-	 *****************************************************************/
-	private double calcPriceTent(int daysStaying) {
-		double cost = (daysStaying * 3 * unit.getNumOfTenters());
-		return cost;
-		}
+	 ******************************************************************/
+	private double calcPriceTent() {
+		return unit.getDaysStaying() * 3 * unit.getNumOfTenters();
+	}
 	
-	/******************************************************************
+	/*******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 
-	 * into a GregorianCalender and then calls the set Method from 
-	 * the Site class
+	 * into a GregorianCalender 
 	 * 
-	 *****************************************************************/
-	private boolean setCheckInDate() {
-		boolean a = true;
+	 * @return GregorianCalendar that matches what was typed in
+	 ******************************************************************/
+	private GregorianCalendar getCheckInDate() {
 		String input[] = occupyedOnTxt.getText().split("/");
 		int inputInt[] = new int[input.length];
 
-		if (!input[0].isEmpty()) {
-			if (input.length == 3) {
-			for (int i = 0; i < input.length; i++) {
-				try {
-				inputInt[i] = Integer.parseInt(input[i].trim());
-				}catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(null, "Please enter"
-							+ " the date"
-							+ " in the correct format, mm/dd/yyyy");
-					a = false;
-					return false;
-					}
+		if (input.length == 3) {
+			try {
+				for (int i = 0; i < input.length; i++) {
+					inputInt[i] = Integer.parseInt(input[i].trim());
+				}
+			}
+			catch (NumberFormatException ex) {
+				return null;
 			}
 			
-			}else {
-			JOptionPane.showMessageDialog(null, "Please enter the date"
-					+ " in the correct format, mm/dd/yyyy");
-			a = false;
-			return false;
+			if (checkDates(inputInt[0], inputInt[1], inputInt[2])) {
+				return new GregorianCalendar(inputInt[2], inputInt[0],
+						inputInt[1]);
 			}
-			
 		}
-		if(a = true && checkDates(inputInt[0], inputInt[1],
-				inputInt[2]) == true) {
-			unit.setCheckIn(new GregorianCalendar(inputInt[2],
-					inputInt[0], inputInt[1]));
-			return true;
-		}
-		else 
-			return false;
+		
+		return null;
 	}
 	
 	/******************************************************************
 	 * Private helper method that checks that dates are valid
-	 * 
 	 *****************************************************************/
 	private boolean checkDates(int month, int day, int year) {
-		boolean a = false;
-		boolean b = false;
-		boolean c = false;
-		if (year >= 2017 && year < 2099) {
-			a = true;
-			if(month > 0 && month < 13) {
-				b = true;
-				if (month == 1 && day > 31 || month == 1 && day < 0) {
-					JOptionPane.showMessageDialog(null, "For January,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 2 && day > 28 || month == 2 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For February,"
-							+ " please choose a day from 1 to 28.");
-				}else if (month == 3 && day > 31 || month == 3 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For March,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 4 && day > 30 || month == 4 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For April,"
-							+ " please choose a day from 1 to 30.");
-				}else if (month == 5 && day > 31 || month == 5 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For May,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 6 && day > 30 || month == 6 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For June,"
-							+ " please choose a day from 1 to 30.");
-				}else if (month == 7 && day > 31 || month == 7 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For July,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 8 && day > 31 || month == 8 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For August,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 9 && day > 30 || month == 9 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null,"For September,"
-							+ " please choose a day from 1 to 30.");
-				}else if (month == 10 && day > 31 || month == 10 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For October,"
-							+ " please choose a day from 1 to 31.");
-				}else if (month == 11 && day > 30 || month == 11 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For November,"
-							+ " please choose a day from 1 to 30.");
-				}else if (month == 12 && day > 31 || month == 12 &&
-						day < 0) {
-					JOptionPane.showMessageDialog(null, "For December,"
-							+ " please choose a day from 1 to 31.");
-				}else
-					c = true;
-			}else {
-			JOptionPane.showMessageDialog(null, "Please choose a month"
-					+ " from 1 to 12.");
-			return false;
-			}
-		}else {
+		String[] months = {null, "January", "February", "March",
+						   "April", "May", "June", "July", "August", 
+						   "September", "October", "November", 
+						   "December"};
+		
+		if (year < 2017 || year >= 2099) {
 			JOptionPane.showMessageDialog(null, "Please choose a year"
 					+ " from 2017 to 2099.");
-			return false;
-			}
-		if (a == true && b == true && c == true) {
-			return true;
-		}else {
+			
 			return false;
 		}
+		
+		if (month <= 0 || month > 12) {
+			JOptionPane.showMessageDialog(null, "Please choose a month"
+					+ " from 1 to 12.");
+			
+			return false;
+		}
+		
+		switch (month) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+				if (day < 1 || day > 31) {
+					JOptionPane.showMessageDialog(null, "For " + months[month]
+							+ ", please choose a day from 1 to 31.");
+					
+					return false;
+				}
+				
+				return true;
+			case 4:
+			case 6:
+			case 9:
+			case 11:
+				if (day < 1 || day > 30) {
+					JOptionPane.showMessageDialog(null, "For " + months[month]
+							+ ", please choose a day from 1 to 30.");
+					
+					return false;
+				}
+				
+				return true;
+			case 2:
+				if (day < 1 || day > 28) {
+					JOptionPane.showMessageDialog(null, "For " + months[month]
+							+ ", please choose a day from 1 to 28.");
+					
+					return false;
+				}
+				
+				return true;
+			default:
+				return false;
+		}
 	}
-	
-	
-	
-	/******************************************************************
+
+	/*******************************************************************
 	 * Getter method for unit
 	 * 
 	 * @return unit is the current RV
-	 *****************************************************************/
+	 ******************************************************************/
 	public Tent getTent() {
 		return unit;
 	}
 
-	/******************************************************************
+	/*******************************************************************
 	 * Getter method for closeStatus
 	 * 
 	 * @return closeStatus is a boolean that changes when the 
 	 * JDialog is finished
-	 *****************************************************************/
+	 ******************************************************************/
 	public boolean getCloseStatus() {
 		return closeStatus;
 	}
-	
 }
