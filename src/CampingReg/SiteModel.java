@@ -112,6 +112,10 @@ public class SiteModel extends AbstractTableModel {
 		return null;
 	}
 	
+	public ArrayList<Site> getCurrentSites() {
+		return sites;
+	}
+	
 	/*******************************************************************
 	 * Adds a site to the list (and updates the view)
 	 * 

@@ -33,11 +33,11 @@ public class Site implements Serializable {
 	
 	/** The minimum accepted date **/
 	private final GregorianCalendar MIN_DATE = 
-			new GregorianCalendar(2017, 1, 1);
+			new GregorianCalendar(2017, 0, 1);
 	
 	/** The maximum accepted date **/
 	private final GregorianCalendar MAX_DATE = 
-			new GregorianCalendar(2099, 12, 31);
+			new GregorianCalendar(2099, 11, 31);
 	
 	/*******************************************************************
 	 * Constructor that sets up the site with given parameters
@@ -129,7 +129,7 @@ public class Site implements Serializable {
 	 ******************************************************************/
 	public void setCheckIn(GregorianCalendar date) throws Exception {
 		if (date == null) {
-			throw new Exception("Invalid date");
+			throw new Exception("Don't show");
 		}
 		else if (date.getTimeInMillis() < MIN_DATE.getTimeInMillis()) {
 			throw new Exception("Check in date cannot be before "

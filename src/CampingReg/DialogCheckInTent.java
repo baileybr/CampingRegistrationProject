@@ -3,6 +3,7 @@ package CampingReg;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 import javax.swing.Box;
@@ -19,7 +20,8 @@ import javax.swing.JTextField;
  * 
  * @author Brendan Bailey
  **********************************************************************/
-public class DialogCheckInTent extends JDialog implements ActionListener{
+public class DialogCheckInTent extends JDialog 
+							   implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -54,6 +56,8 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	
 	/* Month, Day, and Year */
 	private int month, day, year;
+	
+	private SiteModel sModel;
 
 	/*******************************************************************
 	 * Constructor that sets up the Dialog with given parameters
@@ -61,8 +65,11 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 	 * @param paOccupy is the frame for the JDialog
 	 * @param d is the Tent being checked in
 	 ******************************************************************/
-	public DialogCheckInTent(JFrame paOccupy, Tent d) {	
+	public DialogCheckInTent(JFrame paOccupy, 
+			Tent d, 
+			SiteModel sModel) {	
 		unit = d; 
+		this.sModel = sModel;
 		
 		//Creates Gregorian Calendar
 		gCalendarCheckIn = new GregorianCalendar();
@@ -152,6 +159,7 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 			}
 		}
 		else if (e.getSource() == cancelButton) {
+			unit = null;
 			dialog.dispose();
 		}
 	}
@@ -212,9 +220,11 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 			try {
 				unit = new Tent(nameTxt.getText(),
 								getCheckInDate(),
-								siteNum,
 								daysStaying,
+								siteNum,
 								tenters);
+				
+				checkOtherSites();
 				
 				JOptionPane.showMessageDialog(null, "You Owe: $" + 
 						calcPriceTent());
@@ -222,7 +232,10 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 				dialog.dispose();
 			}
 			catch (Exception ex) {
-				JOptionPane.showMessageDialog(null, ex.getMessage());
+				if (!ex.getMessage().equals("Don't show")) {
+					JOptionPane.showMessageDialog(null, 
+							ex.getMessage());
+				}
 			}
 		}	
 	}
@@ -257,11 +270,130 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 				return null;
 			}
 			
-			return new GregorianCalendar(inputInt[2], inputInt[0],
-					inputInt[1]);
+			if (checkDates(inputInt[0], inputInt[1], inputInt[2])) {
+				return new GregorianCalendar(inputInt[2], 
+						inputInt[0] - 1,
+						inputInt[1]);
+			}
 		}
-		else {
-			return null;
+		
+		return null;
+	}
+	
+	/******************************************************************
+	 * Private helper method that checks that dates are valid
+	 *****************************************************************/
+	private boolean checkDates(int month, int day, int year) {
+		String[] months = {null, "January", "February", "March",
+						   "April", "May", "June", "July", "August", 
+						   "September", "October", "November", 
+						   "December"};
+		
+		if (year < 2017 || year >= 2099) {
+			JOptionPane.showMessageDialog(null, "Please choose a year"
+					+ " from 2017 to 2099.");
+			
+			return false;
+		}
+		
+		if (month <= 0 || month > 12) {
+			JOptionPane.showMessageDialog(null, "Please choose a month"
+					+ " from 1 to 12.");
+			
+			return false;
+		}
+		
+		switch (month) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+				if (day < 1 || day > 31) {
+					JOptionPane.showMessageDialog(null, "For "
+							+ months[month]
+							+ ", please choose a day from 1 to 31.");
+					
+					return false;
+				}
+				
+				return true;
+			case 4:
+			case 6:
+			case 9:
+			case 11:
+				if (day < 1 || day > 30) {
+					JOptionPane.showMessageDialog(null, "For "
+							+ months[month]
+							+ ", please choose a day from 1 to 30.");
+					
+					return false;
+				}
+				
+				return true;
+			case 2:
+				if (day < 1 || day > 28) {
+					JOptionPane.showMessageDialog(null, "For "
+							+ months[month]
+							+ ", please choose a day from 1 to 28.");
+					
+					return false;
+				}
+				
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/*******************************************************************
+	 * Private helper method that checks if the site info entered will
+	 * work with what's currently occupied
+	 * 
+	 * @throws Exception when the requested dates conflict with already
+	 * reserved dates
+	 ******************************************************************/
+	private void checkOtherSites() throws Exception {
+		ArrayList<Site> otherSites = sModel.getCurrentSites();
+		
+		for (int i = 0; i < otherSites.size(); i++) {
+			// Find the other sites that have the same site number as
+			// the new site to be added
+			if (otherSites.get(i).getSiteNumber() == 
+					unit.getSiteNumber()) {
+				GregorianCalendar otherClone = 
+						(GregorianCalendar)otherSites.get(i)
+						.getCheckIn().clone();
+				GregorianCalendar unitClone = 
+						(GregorianCalendar)unit.getCheckIn().clone();
+				
+				for (int j = 0; j < unit.getDaysStaying(); j++) {
+					for (int k = 0; 
+							k < otherSites.get(i).getDaysStaying(); 
+							k++) {
+						if (unitClone.getTimeInMillis() == 
+								otherClone.getTimeInMillis()) {
+							// TODO: Update message to include what 
+							// days are available near the requested 
+							// dates
+							throw new Exception("This site is reserved "
+									+ "during the requested date range."
+									+ "\nPlease try a different "
+									+ "check-in date and length "
+									+ "of stay");
+						}
+						
+						otherClone.add(GregorianCalendar.DAY_OF_MONTH,
+								1);
+					}
+					
+					unitClone.add(GregorianCalendar.DAY_OF_MONTH, 1);
+					otherClone.add(GregorianCalendar.DAY_OF_MONTH, 
+							otherSites.get(i).getDaysStaying() * -1);
+				}
+			}
 		}
 	}
 	
