@@ -3,6 +3,8 @@ package CampingReg;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.GregorianCalendar;
 
 import javax.swing.JFileChooser;
@@ -10,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -37,10 +40,14 @@ public class GUICampingReg extends JFrame implements ActionListener {
 	
 	private SiteModel sModel;
 	
+	private Key keyPressedListener;
+	
 	/*******************************************************************
 	 * Initialize all class level variables
 	 ******************************************************************/
 	public GUICampingReg() {
+		keyPressedListener = new Key();
+		
 		mainPanel = new JPanel(new BorderLayout());
 		
 		menu = new JMenuBar();
@@ -57,6 +64,7 @@ public class GUICampingReg extends JFrame implements ActionListener {
 		sModel = new SiteModel();
 		
 		table = new JTable(sModel);
+		table.addKeyListener(keyPressedListener);
 	}
 	
 	/*******************************************************************
@@ -166,5 +174,39 @@ public class GUICampingReg extends JFrame implements ActionListener {
 		exit.addActionListener(this);
 		checkInTent.addActionListener(this);
 		checkInRv.addActionListener(this);
+	}
+
+	/*******************************************************************
+	 * Key listener class used for catching keypresses on the table
+	 * 
+	 * @author Ben Buurstra
+	 ******************************************************************/
+	private class Key implements KeyListener {
+		public void keyPressed(KeyEvent e) {
+			// 8 is the backspace key
+			if (e.getKeyCode() == 8) {
+				int row = table.getSelectedRow();
+				if (row != -1) {
+					int result = JOptionPane.showConfirmDialog(null, 
+							"Are you sure you want to "
+							+ "delete this entry?");
+					
+					// 0 means yes
+					if (result == 0) {
+						sModel.remove(row);
+					}
+				}
+			}
+		}
+		
+		public void keyTyped(KeyEvent e) {
+			// Unused, but is abstract
+		}
+
+
+		public void keyReleased(KeyEvent e) {
+			// Unused, but is abstract
+		}
+		
 	}
 }
