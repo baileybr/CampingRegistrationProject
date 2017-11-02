@@ -57,6 +57,7 @@ public class DialogCheckInTent extends JDialog
 	/* Month, Day, and Year */
 	private int month, day, year;
 	
+	/* SiteModel */
 	private SiteModel sModel;
 
 	/*******************************************************************

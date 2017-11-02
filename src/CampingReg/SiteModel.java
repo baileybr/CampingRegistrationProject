@@ -112,6 +112,11 @@ public class SiteModel extends AbstractTableModel {
 		return null;
 	}
 	
+	/*******************************************************************
+	 * Gets the list of sites
+	 * 
+	 * @return an ArrayList of all sites
+	 ******************************************************************/
 	public ArrayList<Site> getCurrentSites() {
 		return sites;
 	}
@@ -127,6 +132,22 @@ public class SiteModel extends AbstractTableModel {
 		refresh();
 	}
 	
+	/*******************************************************************
+	 * Removes a site from the list (and updates the view)
+	 * 
+	 * @param index the index in the list to be removed
+	 ******************************************************************/
+	public void remove(int index) {
+		sites.remove(index);
+		
+		refresh();
+	}
+	
+	/*******************************************************************
+	 * Saves the current table as a serializable object
+	 * 
+	 * @param filename the filename of the file to be saved
+	 ******************************************************************/
 	public void saveSerial(String filename) {
 		try {
 			FileOutputStream f = new FileOutputStream(new File(filename));
@@ -143,6 +164,11 @@ public class SiteModel extends AbstractTableModel {
 		}
 	}
 	
+	/*******************************************************************
+	 * Loads a file that was saved as a serializable object
+	 * 
+	 * @param filename the filename of the file to be loaded
+	 ******************************************************************/
 	public void loadSerial(String filename) {
 		try {
 			FileInputStream f = new FileInputStream(new File(filename));
@@ -163,6 +189,11 @@ public class SiteModel extends AbstractTableModel {
 		}
 	}
 	
+	/*******************************************************************
+	 * Saves a file as a text file
+	 * 
+	 * @param filename the filename of the file to be saved as text
+	 ******************************************************************/
 	public void saveText(String filename) {
 		try {
 			File file = new File(filename);
@@ -191,6 +222,12 @@ public class SiteModel extends AbstractTableModel {
 		}
 	}
 	
+	/*******************************************************************
+	 * Loads a file that was saved as a text file
+	 * 
+	 * @param filename the filename of the file to be loaded as a text
+	 * file
+	 ******************************************************************/
 	public void loadText(String filename) {
 		try {
 			File file = new File(filename);
@@ -237,6 +274,10 @@ public class SiteModel extends AbstractTableModel {
 		}
 	}
 	
+	/*******************************************************************
+	 * Private helper method that calls fireTableRowsInserted which
+	 * refreshes the table
+	 ******************************************************************/
 	private void refresh() {
 		fireTableRowsInserted(0, getRowCount() - 1);
 	}
