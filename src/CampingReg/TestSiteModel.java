@@ -138,7 +138,7 @@ public class TestSiteModel {
 	public void testValueAt() throws Exception {
 		SiteModel s = new SiteModel();
 		Tent t = new Tent();
-		GregorianCalendar g = new GregorianCalendar(2017, 10, 31);
+		GregorianCalendar g = new GregorianCalendar(2017, 9, 15);
 		t.setNameReserving("John Doe");
 		t.setCheckIn(g);
 		t.setDaysStaying(1);
@@ -146,7 +146,7 @@ public class TestSiteModel {
 		t.setNumOfTenters(1);
 		s.add(t);
 		assertTrue(s.getValueAt(0, 0) == "John Doe");
-//		assertTrue(s.getValueAt(0, 1) == "10/31/2017");
+		assertTrue(s.getValueAt(0, 1) == "10/15/2017");
 //		assertTrue(s.getValueAt(0, 2) == "1");
 //		assertTrue(s.getValueAt(0, 3) == "1");
 //		assertTrue(s.getValueAt(0, 4) == "1 tenter");
