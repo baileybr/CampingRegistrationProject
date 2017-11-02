@@ -33,11 +33,11 @@ public class Site implements Serializable {
 	
 	/** The minimum accepted date **/
 	private final GregorianCalendar MIN_DATE = 
-			new GregorianCalendar(2017, 1, 1);
+			new GregorianCalendar(2017, 0, 1);
 	
 	/** The maximum accepted date **/
 	private final GregorianCalendar MAX_DATE = 
-			new GregorianCalendar(2099, 12, 31);
+			new GregorianCalendar(2099, 11, 31);
 	
 	/*******************************************************************
 	 * Constructor that sets up the site with given parameters
@@ -112,7 +112,7 @@ public class Site implements Serializable {
 	 * @return string representation of the check in date
 	 ******************************************************************/
 	public String getCheckInAsString() {
-		String retVal = checkIn.get(GregorianCalendar.MONTH) + "/"
+		String retVal = (checkIn.get(GregorianCalendar.MONTH) + 1) + "/"
 						+ checkIn.get(GregorianCalendar.DAY_OF_MONTH) +
 						"/" + checkIn.get(GregorianCalendar.YEAR);
 		

@@ -120,17 +120,17 @@ public class GUICampingReg extends JFrame implements ActionListener {
 		else if (e.getSource() == checkInTent) {
 			Tent tent = new Tent();
 			DialogCheckInTent dialog = new DialogCheckInTent(this,
-					tent);
-			if (dialog.getCloseStatus() == true) {
+					tent, sModel);
+			if (dialog.getCloseStatus() == true && dialog.getTent() != null) {
 				sModel.add(dialog.getTent());
 			}
 		}
 		else if (e.getSource() == checkInRv) {
 			RV rv = new RV();
 			DialogCheckInRv dialog = new DialogCheckInRv(this,
-					rv);
+					rv, sModel);
 
-			if (dialog.getCloseStatus() == true) {
+			if (dialog.getCloseStatus() == true && dialog.getRV() != null) {
 				sModel.add(dialog.getRV());
 			}
 		}
