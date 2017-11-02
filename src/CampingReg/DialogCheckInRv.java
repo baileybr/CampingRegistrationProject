@@ -207,8 +207,8 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 			try {
 				unit = new RV(nameTxt.getText(),
 						getCheckInDate(),
-						siteNum,
 						daysStaying,
+						siteNum,
 						getPowerFromView());
 
 				JOptionPane.showMessageDialog(null, "You Owe: $" + 

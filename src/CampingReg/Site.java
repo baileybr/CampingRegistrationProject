@@ -112,7 +112,7 @@ public class Site implements Serializable {
 	 * @return string representation of the check in date
 	 ******************************************************************/
 	public String getCheckInAsString() {
-		String retVal = (checkIn.get(GregorianCalendar.MONTH) + 1) + "/"
+		String retVal = checkIn.get(GregorianCalendar.MONTH) + "/"
 						+ checkIn.get(GregorianCalendar.DAY_OF_MONTH) +
 						"/" + checkIn.get(GregorianCalendar.YEAR);
 		

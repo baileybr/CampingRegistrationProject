@@ -212,8 +212,8 @@ public class DialogCheckInTent extends JDialog implements ActionListener{
 			try {
 				unit = new Tent(nameTxt.getText(),
 								getCheckInDate(),
-								siteNum,
 								daysStaying,
+								siteNum,
 								tenters);
 				
 				JOptionPane.showMessageDialog(null, "You Owe: $" + 
