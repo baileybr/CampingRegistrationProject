@@ -74,4 +74,13 @@ public class RV extends Site {
 					+ "30, 40, or 50 amps.");
 		}
 	}
+	
+	public String toString() {
+		return "RV," +
+				this.getNameReserving() + "," +
+				this.getCheckInAsString() + "," +
+				this.getDaysStaying() + "," +
+				this.getSiteNumber() + "," +
+				this.getPower();
+	}
 }

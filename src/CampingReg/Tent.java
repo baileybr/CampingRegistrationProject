@@ -65,4 +65,13 @@ public class Tent extends Site {
 		
 		numOfTenters = tents;
 	}
+	
+	public String toString() {
+		return "Tent," +
+				this.getNameReserving() + "," +
+				this.getCheckInAsString() + "," +
+				this.getDaysStaying() + "," +
+				this.getSiteNumber() + "," +
+				this.getNumOfTenters();
+	}
 }

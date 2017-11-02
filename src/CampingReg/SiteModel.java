@@ -144,6 +144,15 @@ public class SiteModel extends AbstractTableModel {
 	}
 	
 	/*******************************************************************
+	 * Gets the site at the requested index
+	 * @param index the index of the requested site
+	 * @return the site at the specified index
+	 ******************************************************************/
+	public Site getAtIndex(int index) {
+		return sites.get(index);
+	}
+	
+	/*******************************************************************
 	 * Saves the current table as a serializable object
 	 * 
 	 * @param filename the filename of the file to be saved
@@ -200,20 +209,7 @@ public class SiteModel extends AbstractTableModel {
 			PrintWriter pw = new PrintWriter(file);
 			
 			for (int i = 0; i < sites.size(); i++) {
-				String info = "";
-				if (sites.get(i) instanceof RV) {
-					info = Integer.toString(((RV)sites.get(i)).getPower());
-				}
-				else {
-					info = Integer.toString(((Tent)sites.get(i)).getNumOfTenters());
-				}
-				
-				pw.write(sites.get(i).getClass() + "," +
-						sites.get(i).getNameReserving() + "," +
-						sites.get(i).getCheckInAsString() + "," +
-						sites.get(i).getDaysStaying() + "," +
-						sites.get(i).getSiteNumber() + "," +
-						info + "\n");
+				pw.write(sites.get(i) + "\n");
 			}
 			
 			pw.close();
@@ -237,33 +233,10 @@ public class SiteModel extends AbstractTableModel {
 			
 			String line;
 			while ((line = br.readLine()) != null) {
-				String[] items = line.split(",");
+				Site retVal = stringToSite(line);
 				
-				// TODO: Rewrite this to include validation
-				if (items.length == 6) {
-					GregorianCalendar date = new GregorianCalendar();
-					String[] parsedDate = items[2].split("/");
-					date.set(GregorianCalendar.MONTH, Integer.parseInt(parsedDate[0]));
-					date.set(GregorianCalendar.DAY_OF_MONTH, Integer.parseInt(parsedDate[1]));
-					date.set(GregorianCalendar.YEAR, Integer.parseInt(parsedDate[2]));
-					
-					if (items[0].indexOf("RV") > -1) {
-						sites.add(new RV(items[1], 
-								date, 
-								Integer.parseInt(items[3]), 
-								Integer.parseInt(items[4]), 
-								Integer.parseInt(items[5])));
-					}
-					else if (items[0].indexOf("Tent") > -1) {
-						sites.add(new Tent(items[1], 
-								date, 
-								Integer.parseInt(items[3]), 
-								Integer.parseInt(items[4]), 
-								Integer.parseInt(items[5])));
-					}
-				}
-				else {
-					throw new Exception("File was corrupted and could not be loaded");
+				if (retVal != null) {
+					sites.add(retVal);
 				}
 			}
 			
@@ -272,6 +245,50 @@ public class SiteModel extends AbstractTableModel {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
+	}
+	
+	/*******************************************************************
+	 * 
+	 * @param input
+	 * @return
+	 * @throws Exception
+	 ******************************************************************/
+	public Site stringToSite(String input) throws Exception {
+		String[] items = input.split(",");
+		
+		// TODO: Rewrite this to include validation
+		if (items.length == 6) {
+			GregorianCalendar date = new GregorianCalendar();
+			String[] parsedDate = items[2].split("/");
+			date.set(GregorianCalendar.MONTH, Integer.parseInt(parsedDate[0]) - 1);
+			date.set(GregorianCalendar.DAY_OF_MONTH, Integer.parseInt(parsedDate[1]));
+			date.set(GregorianCalendar.YEAR, Integer.parseInt(parsedDate[2]));
+			
+			try {
+				if (items[0].indexOf("RV") > -1) {
+					return new RV(items[1], 
+							date, 
+							Integer.parseInt(items[3]), 
+							Integer.parseInt(items[4]), 
+							Integer.parseInt(items[5]));
+				}
+				else if (items[0].indexOf("Tent") > -1) {
+					return new Tent(items[1], 
+							date, 
+							Integer.parseInt(items[3]), 
+							Integer.parseInt(items[4]), 
+							Integer.parseInt(items[5]));
+				}
+			}
+			catch (Exception ex) {
+				throw new Exception(ex.getMessage());
+			}
+		}
+		else {
+			throw new Exception("File was corrupted and could not be loaded");
+		}
+		
+		return null;
 	}
 	
 	/*******************************************************************
