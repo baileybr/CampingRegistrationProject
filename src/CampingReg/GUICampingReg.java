@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 import javax.swing.JFileChooser;
@@ -42,11 +43,14 @@ public class GUICampingReg extends JFrame implements ActionListener {
 	
 	private Key keyPressedListener;
 	
+	private ArrayList<String> pastEdits;
+	
 	/*******************************************************************
 	 * Initialize all class level variables
 	 ******************************************************************/
 	public GUICampingReg() {
 		keyPressedListener = new Key();
+		pastEdits = new ArrayList<String>();
 		
 		mainPanel = new JPanel(new BorderLayout());
 		
@@ -131,6 +135,7 @@ public class GUICampingReg extends JFrame implements ActionListener {
 					tent, sModel);
 			if (dialog.getCloseStatus() == true && dialog.getTent() != null) {
 				sModel.add(dialog.getTent());
+				pastEdits.add("D," + (sModel.getRowCount() - 1));
 			}
 		}
 		else if (e.getSource() == checkInRv) {
@@ -140,6 +145,7 @@ public class GUICampingReg extends JFrame implements ActionListener {
 
 			if (dialog.getCloseStatus() == true && dialog.getRV() != null) {
 				sModel.add(dialog.getRV());
+				pastEdits.add("D," + (sModel.getRowCount() - 1));
 			}
 		}
 	}
@@ -175,6 +181,39 @@ public class GUICampingReg extends JFrame implements ActionListener {
 		checkInTent.addActionListener(this);
 		checkInRv.addActionListener(this);
 	}
+	
+	private void undo() {
+		if (pastEdits.size() > 0) {
+			String execute = pastEdits.get(pastEdits.size() - 1);
+			String[] items = execute.split(",");
+			
+			switch (items[0]) {
+				case "D":
+					sModel.remove(Integer.parseInt(items[1]));
+					pastEdits.remove(pastEdits.size() - 1);
+					
+					break;
+				case "I":
+					String input = "";
+					
+					for (int i = 1; i < items.length; i++) {
+						input += (items[i] + ",");
+					}
+					
+					try {
+						Site retVal = sModel.stringToSite(input);
+						sModel.add(retVal);
+						pastEdits.remove(pastEdits.size() - 1);
+					}
+					catch (Exception ex) {
+						JOptionPane.showMessageDialog(null, 
+								ex.getMessage());
+					}
+					
+					break;
+			}
+		}
+	}
 
 	/*******************************************************************
 	 * Key listener class used for catching keypresses on the table
@@ -193,8 +232,16 @@ public class GUICampingReg extends JFrame implements ActionListener {
 					
 					// 0 means yes
 					if (result == 0) {
+						pastEdits.add("I," + sModel.getAtIndex(row));
 						sModel.remove(row);
 					}
+				}
+			}
+			
+			if (e.isMetaDown()) {
+				// 90 means Z
+				if (e.getKeyCode() == 90) {
+					undo();
 				}
 			}
 		}
