@@ -57,6 +57,15 @@ public class RV extends Site {
 	}
 	
 	/*******************************************************************
+	 * Method that calculates the cost of the RV site
+	 * 
+	 * @return cost is the cost of the RV site
+	 ******************************************************************/
+	public int calcCost(int days) {
+		return 30 * days;
+	}
+	
+	/*******************************************************************
 	 * Getter method for the power supplied to the site, power 
 	 * can be either 30, 40, or 50 amps
 	 * 
@@ -83,4 +92,5 @@ public class RV extends Site {
 				this.getSiteNumber() + "," +
 				this.getPower();
 	}
+
 }

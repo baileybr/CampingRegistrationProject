@@ -218,7 +218,7 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 				checkOtherSites();
 
 				JOptionPane.showMessageDialog(null, "You Owe: $" + 
-						calcPriceRV());
+						unit.calcCost(daysStaying));
 
 				dialog.dispose();
 			}
@@ -231,15 +231,6 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 		}	
 	}
 
-	/*******************************************************************
-	 * Private helper method that calculates the price of renting
-	 * an RV site
-	 * 
-	 * @return cost is the cost of renting the site
-	 ******************************************************************/
-	private double calcPriceRV() {
-		return unit.getDaysStaying() * 30;
-	}
 
 	/*******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 
