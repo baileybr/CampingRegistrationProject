@@ -210,7 +210,7 @@ public class SiteModel extends AbstractTableModel {
 			
 			o.close();
 			f.close();
-			textSave = true;
+			serialSave = true;
 			saveName = filename;
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
@@ -268,7 +268,6 @@ public class SiteModel extends AbstractTableModel {
 			refresh();
 			textSave = true;
 			saveName = filename;
-			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
