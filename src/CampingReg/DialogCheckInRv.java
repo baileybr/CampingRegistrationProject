@@ -218,7 +218,7 @@ public class DialogCheckInRv extends JDialog implements ActionListener{
 				checkOtherSites();
 
 				JOptionPane.showMessageDialog(null, "You Owe: $" + 
-						unit.calcCost(daysStaying));
+						unit.calcCost());
 
 				dialog.dispose();
 			}

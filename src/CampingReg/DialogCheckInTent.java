@@ -228,7 +228,7 @@ public class DialogCheckInTent extends JDialog
 				checkOtherSites();
 				
 				JOptionPane.showMessageDialog(null, "You Owe: $" + 
-						unit.calcCost(daysStaying, tenters));
+						unit.calcCost());
 				
 				dialog.dispose();
 			}

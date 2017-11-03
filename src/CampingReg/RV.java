@@ -61,8 +61,8 @@ public class RV extends Site {
 	 * 
 	 * @return cost is the cost of the RV site
 	 ******************************************************************/
-	public int calcCost(int days) {
-		return 30 * days;
+	public int calcCost() {
+		return 30 * daysStaying;
 	}
 	
 	/*******************************************************************

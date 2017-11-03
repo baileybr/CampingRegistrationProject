@@ -56,8 +56,8 @@ public class Tent extends Site {
 	 * 
 	 * @return cost is the cost of the Tent site
 	 ******************************************************************/
-	public int calcCost(int days, int tenters) {
-		return 3 * days * tenters;
+	public int calcCost() {
+		return 3 * daysStaying * numOfTenters;
 	}
 	
 	/*******************************************************************
