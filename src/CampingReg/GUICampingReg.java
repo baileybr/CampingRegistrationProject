@@ -136,6 +136,8 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			if (dialog.getCloseStatus() == true && dialog.getTent() != null) {
 				sModel.add(dialog.getTent());
 				pastEdits.add("D," + (sModel.getRowCount() - 1));
+				
+				checkIfFull();
 			}
 		}
 		else if (e.getSource() == checkInRv) {
@@ -146,6 +148,8 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			if (dialog.getCloseStatus() == true && dialog.getRV() != null) {
 				sModel.add(dialog.getRV());
 				pastEdits.add("D," + (sModel.getRowCount() - 1));
+				
+				checkIfFull();
 			}
 		}
 	}
@@ -214,6 +218,66 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			}
 		}
 	}
+	
+	/*******************************************************************
+	 * 
+	 ******************************************************************/
+	private void checkIfFull() {
+		ArrayList<Site> sites = sModel.getCurrentSites();
+		ArrayList<GregorianCalendar> fullDays = new ArrayList<GregorianCalendar>();
+		
+		if (sites.size() > 0) {
+			// Set the minDate and maxDate
+			GregorianCalendar minDate = (GregorianCalendar)sites.get(0).getCheckIn().clone();
+			GregorianCalendar maxDate = (GregorianCalendar)minDate.clone();
+			maxDate.add(GregorianCalendar.DAY_OF_MONTH, sites.get(0).getDaysStaying());
+			
+			// Find the earliest and latest dates
+			for (int i = 1; i < sites.size(); i++) {
+				GregorianCalendar temp = (GregorianCalendar)sites.get(i).getCheckIn().clone();
+				
+				if (minDate.compareTo(temp) > 0) {
+					minDate = sites.get(i).getCheckIn();
+				}
+				
+				temp.add(GregorianCalendar.DAY_OF_MONTH, sites.get(i).getDaysStaying());
+				
+				if (maxDate.compareTo(temp) < 0) {
+					maxDate = sites.get(i).getCheckIn();
+				}
+			}
+			
+			boolean [] isOccupied = new boolean[5];
+			
+			while (minDate.compareTo(maxDate) < 0) {
+				for (int i = 0; i < 5; i++) {
+					isOccupied[i] = false;
+					GregorianCalendar localMin = sites.get(i).getCheckIn();
+					GregorianCalendar localMax = null;
+					localMax.add(GregorianCalendar.DAY_OF_MONTH, sites.get(i).getDaysStaying());
+					
+					if (minDate.compareTo(localMin) < 0 && minDate.compareTo(localMax) > 0) {
+						isOccupied[i] = true;
+					}
+				}
+				
+				for (int i = 0; i < 5; i++) {
+					if (!isOccupied[i]) {
+						break;
+					}
+					else {
+						if (i != 4) {
+							continue;
+						}
+						
+						fullDays.add(minDate);
+					}
+				}
+			}
+			
+			System.out.println(fullDays.size());
+		}
+	}
 
 	/*******************************************************************
 	 * Key listener class used for catching keypresses on the table
@@ -234,6 +298,8 @@ public class GUICampingReg extends JFrame implements ActionListener {
 					if (result == 0) {
 						pastEdits.add("I," + sModel.getAtIndex(row));
 						sModel.remove(row);
+						
+						checkIfFull();
 					}
 				}
 			}
@@ -242,6 +308,7 @@ public class GUICampingReg extends JFrame implements ActionListener {
 				// 90 means Z
 				if (e.getKeyCode() == 90) {
 					undo();
+					checkIfFull();
 				}
 			}
 		}
