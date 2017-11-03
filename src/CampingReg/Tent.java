@@ -60,7 +60,8 @@ public class Tent extends Site {
 	 ******************************************************************/
 	public void setNumOfTenters(int tents) throws Exception {
 		if (tents < 1) {
-			throw new Exception("Number of tenters must be greater than 0");
+			throw new Exception("Number of tenters must be greater "
+					+ "than 0");
 		}
 		
 		numOfTenters = tents;

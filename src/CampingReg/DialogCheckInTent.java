@@ -375,13 +375,13 @@ public class DialogCheckInTent extends JDialog
 							k < otherSites.get(i).getDaysStaying(); 
 							k++) {
 						if (unitClone.get(GregorianCalendar.MONTH) == 
-								otherClone.get(GregorianCalendar.MONTH) &&
-								unitClone.get(GregorianCalendar
-										.DAY_OF_MONTH) ==
-								otherClone.get(GregorianCalendar
-										.DAY_OF_MONTH) &&
-								unitClone.get(GregorianCalendar.YEAR) ==
-								otherClone.get(GregorianCalendar.YEAR)) {
+							otherClone.get(GregorianCalendar.MONTH) &&
+							unitClone.get(GregorianCalendar
+									.DAY_OF_MONTH) ==
+							otherClone.get(GregorianCalendar
+									.DAY_OF_MONTH) &&
+							unitClone.get(GregorianCalendar.YEAR) ==
+							otherClone.get(GregorianCalendar.YEAR)) {
 							// TODO: Update message to include what 
 							// days are available near the requested 
 							// dates
