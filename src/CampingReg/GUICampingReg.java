@@ -123,6 +123,7 @@ public class GUICampingReg extends JFrame implements ActionListener {
 				String filename = chooser.getSelectedFile()
 						.getAbsolutePath();
 				sModel.loadSerial(filename);
+				checkIfFull();
 			}
 		}
 		else if (e.getSource() == saveText) {
@@ -141,6 +142,7 @@ public class GUICampingReg extends JFrame implements ActionListener {
 				String filename = chooser.getSelectedFile()
 						.getAbsolutePath();
 				sModel.loadText(filename);
+				checkIfFull();
 			}
 		}
 		else if (e.getSource() == exit) {
@@ -261,22 +263,23 @@ public class GUICampingReg extends JFrame implements ActionListener {
 						.get(i).getCheckIn().clone();
 				
 				if (minDate.compareTo(temp) > 0) {
-					minDate = sites.get(i).getCheckIn();
+					minDate = (GregorianCalendar)sites
+							.get(i).getCheckIn().clone();
 				}
 				
 				temp.add(GregorianCalendar.DAY_OF_MONTH, sites
 						.get(i).getDaysStaying());
 				
 				if (maxDate.compareTo(temp) < 0) {
-					maxDate = sites.get(i).getCheckIn();
+					maxDate = (GregorianCalendar)sites
+							.get(i).getCheckIn().clone();
 				}
 			}
 			
-			boolean [] isOccupied = new boolean[5];
-			
 			while (minDate.compareTo(maxDate) < 0) {
+				boolean [] isOccupied = new boolean[5];
+				
 				for (int i = 0; i < sites.size(); i++) {
-					isOccupied[i] = false;
 					GregorianCalendar localMin = (GregorianCalendar)
 							sites.get(i).getCheckIn().clone();
 					GregorianCalendar localMax = (GregorianCalendar)
