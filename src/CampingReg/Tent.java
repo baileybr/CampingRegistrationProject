@@ -52,6 +52,15 @@ public class Tent extends Site {
 	}
 	
 	/*******************************************************************
+	 * Method that calculates the cost of the Tent site
+	 * 
+	 * @return cost is the cost of the Tent site
+	 ******************************************************************/
+	public int calcCost() {
+		return 3 * daysStaying * numOfTenters;
+	}
+	
+	/*******************************************************************
 	 * Setter method for the number of tenters on this site
 	 * 
 	 * @param tents is the number of tenters on this site

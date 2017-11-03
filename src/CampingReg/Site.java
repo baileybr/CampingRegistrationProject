@@ -180,6 +180,7 @@ public class Site implements Serializable {
 		return siteNumber;
 	}
 	
+	
 	/*******************************************************************
 	 * Setter method for the site number in which an occupant is 
 	 * staying

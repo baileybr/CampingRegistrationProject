@@ -228,7 +228,7 @@ public class DialogCheckInTent extends JDialog
 				checkOtherSites();
 				
 				JOptionPane.showMessageDialog(null, "You Owe: $" + 
-						calcPriceTent());
+						unit.calcCost());
 				
 				dialog.dispose();
 			}
@@ -241,15 +241,6 @@ public class DialogCheckInTent extends JDialog
 		}	
 	}
 	
-	/*******************************************************************
-	 * Private helper method that calculates the price of renting
-	 * an Tent site
-	 * 
-	 * @return cost is the cost of renting the site
-	 ******************************************************************/
-	private double calcPriceTent() {
-		return unit.getDaysStaying() * 3 * unit.getNumOfTenters();
-	}
 	
 	/*******************************************************************
 	 * Private helper method that converts the text in occupyedOnTxt 
