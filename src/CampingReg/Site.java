@@ -193,7 +193,8 @@ public class Site implements Serializable {
 	 ******************************************************************/
 	public void setSiteNumber(int site) throws Exception {
 		if (site < 1 || site > NUM_OF_SITES) {
-			throw new Exception("There are only " + NUM_OF_SITES + " sites available");
+			throw new Exception("There are only " + NUM_OF_SITES 
+					+ " sites available");
 		}
 		
 		siteNumber = site;

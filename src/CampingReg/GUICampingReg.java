@@ -1,6 +1,7 @@
 package CampingReg;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -10,6 +11,7 @@ import java.util.GregorianCalendar;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -25,6 +27,9 @@ import javax.swing.JTable;
  ***********************************************************************/
 public class GUICampingReg extends JFrame implements ActionListener {
 	private JPanel mainPanel;
+	private JPanel messagePanel;
+	
+	private JLabel fullLabel;
 	
 	private JMenuBar menu;
 	private JMenu file;
@@ -53,6 +58,9 @@ public class GUICampingReg extends JFrame implements ActionListener {
 		pastEdits = new ArrayList<String>();
 		
 		mainPanel = new JPanel(new BorderLayout());
+		messagePanel = new JPanel();
+		
+		fullLabel = new JLabel();
 		
 		menu = new JMenuBar();
 		file = new JMenu("File");
@@ -78,8 +86,13 @@ public class GUICampingReg extends JFrame implements ActionListener {
 		setupMenu();
 		setupActionListeners();
 		
+		messagePanel.add(fullLabel);
+		messagePanel.setBackground(new Color(255, 204, 204));
+		messagePanel.setVisible(false);
+		
 		mainPanel.add(menu, BorderLayout.NORTH);
 		mainPanel.add(new JScrollPane(table), BorderLayout.CENTER);
+		mainPanel.add(messagePanel, BorderLayout.SOUTH);
 		
 		this.add(mainPanel);
 		this.setSize(1000, 600);
@@ -98,7 +111,8 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			JFileChooser chooser = new JFileChooser();
 			int status = chooser.showSaveDialog(null);
 			if (status == JFileChooser.APPROVE_OPTION) {
-				String filename = chooser.getSelectedFile().getAbsolutePath();
+				String filename = chooser.getSelectedFile()
+						.getAbsolutePath();
 				sModel.saveSerial(filename);
 			}
 		}
@@ -106,7 +120,8 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			JFileChooser chooser = new JFileChooser();
 			int status = chooser.showOpenDialog(null);
 			if (status == JFileChooser.APPROVE_OPTION) {
-				String filename = chooser.getSelectedFile().getAbsolutePath();
+				String filename = chooser.getSelectedFile()
+						.getAbsolutePath();
 				sModel.loadSerial(filename);
 			}
 		}
@@ -114,7 +129,8 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			JFileChooser chooser = new JFileChooser();
 			int status = chooser.showSaveDialog(null);
 			if (status == JFileChooser.APPROVE_OPTION) {
-				String filename = chooser.getSelectedFile().getAbsolutePath();
+				String filename = chooser.getSelectedFile()
+						.getAbsolutePath();
 				sModel.saveText(filename);
 			}
 		}
@@ -122,7 +138,8 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			JFileChooser chooser = new JFileChooser();
 			int status = chooser.showOpenDialog(null);
 			if (status == JFileChooser.APPROVE_OPTION) {
-				String filename = chooser.getSelectedFile().getAbsolutePath();
+				String filename = chooser.getSelectedFile()
+						.getAbsolutePath();
 				sModel.loadText(filename);
 			}
 		}
@@ -133,9 +150,12 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			Tent tent = new Tent();
 			DialogCheckInTent dialog = new DialogCheckInTent(this,
 					tent, sModel);
-			if (dialog.getCloseStatus() == true && dialog.getTent() != null) {
+			if (dialog.getCloseStatus() == true && 
+					dialog.getTent() != null) {
 				sModel.add(dialog.getTent());
 				pastEdits.add("D," + (sModel.getRowCount() - 1));
+				
+				checkIfFull();
 			}
 		}
 		else if (e.getSource() == checkInRv) {
@@ -143,9 +163,12 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			DialogCheckInRv dialog = new DialogCheckInRv(this,
 					rv, sModel);
 
-			if (dialog.getCloseStatus() == true && dialog.getRV() != null) {
+			if (dialog.getCloseStatus() == true && 
+					dialog.getRV() != null) {
 				sModel.add(dialog.getRV());
 				pastEdits.add("D," + (sModel.getRowCount() - 1));
+				
+				checkIfFull();
 			}
 		}
 	}
@@ -214,6 +237,103 @@ public class GUICampingReg extends JFrame implements ActionListener {
 			}
 		}
 	}
+	
+	/*******************************************************************
+	 * Checks to see if there are any sites that are full
+	 ******************************************************************/
+	private void checkIfFull() {
+		ArrayList<Site> sites = sModel.getCurrentSites();
+		ArrayList<GregorianCalendar> fullDays = new 
+				ArrayList<GregorianCalendar>();
+		
+		if (sites.size() > 0) {
+			// Set the minDate and maxDate
+			GregorianCalendar minDate = (GregorianCalendar)sites
+					.get(0).getCheckIn().clone();
+			GregorianCalendar maxDate = 
+					(GregorianCalendar)minDate.clone();
+			maxDate.add(GregorianCalendar.DAY_OF_MONTH, sites
+					.get(0).getDaysStaying());
+			
+			// Find the earliest and latest dates
+			for (int i = 1; i < sites.size(); i++) {
+				GregorianCalendar temp = (GregorianCalendar)sites
+						.get(i).getCheckIn().clone();
+				
+				if (minDate.compareTo(temp) > 0) {
+					minDate = sites.get(i).getCheckIn();
+				}
+				
+				temp.add(GregorianCalendar.DAY_OF_MONTH, sites
+						.get(i).getDaysStaying());
+				
+				if (maxDate.compareTo(temp) < 0) {
+					maxDate = sites.get(i).getCheckIn();
+				}
+			}
+			
+			boolean [] isOccupied = new boolean[5];
+			
+			while (minDate.compareTo(maxDate) < 0) {
+				for (int i = 0; i < sites.size(); i++) {
+					isOccupied[i] = false;
+					GregorianCalendar localMin = (GregorianCalendar)
+							sites.get(i).getCheckIn().clone();
+					GregorianCalendar localMax = (GregorianCalendar)
+							localMin.clone();
+					localMax.add(GregorianCalendar.DAY_OF_MONTH, sites
+							.get(i).getDaysStaying());
+					
+					if (minDate.compareTo(localMin) >= 0 && minDate
+							.compareTo(localMax) < 0) {
+						isOccupied[sites.get(i).getSiteNumber() - 1]
+								= true;
+					}
+				}
+				
+				for (int i = 0; i < 5; i++) {
+					if (!isOccupied[i]) {
+						break;
+					}
+					else {
+						if (i != 4) {
+							continue;
+						}
+						
+						fullDays.add((GregorianCalendar)minDate
+								.clone());
+					}
+				}
+				
+				minDate.add(GregorianCalendar.DAY_OF_MONTH, 1);
+			}
+			
+			if (fullDays.size() > 0) {
+				String message = "The following days have no "
+						+ "sites available: ";
+				
+				for (int i = 0; i < fullDays.size(); i++) {
+					message += (fullDays.get(i).get(GregorianCalendar
+										.MONTH) + 1) + "/" +
+								fullDays.get(i).get(GregorianCalendar
+										.DAY_OF_MONTH) + "/" +
+								fullDays.get(i).get(GregorianCalendar
+										.YEAR);
+					
+					if (!(i == (fullDays.size() - 1))) {
+						message += ", ";
+					}
+				}
+				
+				fullLabel.setText(message);
+				messagePanel.setVisible(true);
+			}
+			else {
+				fullLabel.setText("");
+				messagePanel.setVisible(false);
+			}
+		}
+	}
 
 	/*******************************************************************
 	 * Key listener class used for catching keypresses on the table
@@ -234,6 +354,8 @@ public class GUICampingReg extends JFrame implements ActionListener {
 					if (result == 0) {
 						pastEdits.add("I," + sModel.getAtIndex(row));
 						sModel.remove(row);
+						
+						checkIfFull();
 					}
 				}
 			}
@@ -242,6 +364,7 @@ public class GUICampingReg extends JFrame implements ActionListener {
 				// 90 means Z
 				if (e.getKeyCode() == 90) {
 					undo();
+					checkIfFull();
 				}
 			}
 		}
