@@ -248,10 +248,12 @@ public class SiteModel extends AbstractTableModel {
 	}
 	
 	/*******************************************************************
+	 * Converts a string input into a Site object
 	 * 
-	 * @param input
-	 * @return
-	 * @throws Exception
+	 * @param input the values to be converted into a Site object
+	 * @return a Site object that holds the same information as the 
+	 * passed in values
+	 * @throws Exception when there are incorrect values
 	 ******************************************************************/
 	public Site stringToSite(String input) throws Exception {
 		String[] items = input.split(",");

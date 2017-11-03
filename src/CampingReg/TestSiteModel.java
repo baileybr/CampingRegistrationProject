@@ -137,19 +137,14 @@ public class TestSiteModel {
 	@Test
 	public void testValueAt() throws Exception {
 		SiteModel s = new SiteModel();
-		Tent t = new Tent();
 		GregorianCalendar g = new GregorianCalendar(2017, 9, 15);
-		t.setNameReserving("John Doe");
-		t.setCheckIn(g);
-		t.setDaysStaying(1);
-		t.setSiteNumber(1);
-		t.setNumOfTenters(1);
+		Tent t = new Tent("John Doe", g, 1, 1, 1);
 		s.add(t);
-		assertTrue(s.getValueAt(0, 0) == "John Doe");
-		assertTrue(s.getValueAt(0, 1) == "10/15/2017");
-//		assertTrue(s.getValueAt(0, 2) == "1");
-//		assertTrue(s.getValueAt(0, 3) == "1");
-//		assertTrue(s.getValueAt(0, 4) == "1 tenter");
+		assertTrue(s.getValueAt(0, 0).equals("John Doe"));
+		assertTrue(s.getValueAt(0, 1).equals("10/15/2017"));
+		assertTrue(s.getValueAt(0, 2) == (Object)1);
+		assertTrue(s.getValueAt(0, 3) == (Object)1);
+		assertTrue(s.getValueAt(0, 4).equals("1 tenter"));
 	}
 	
 	@Test
@@ -222,26 +217,37 @@ public class TestSiteModel {
 	public void testLoadandSaveSerial() {
 		SiteModel s = new SiteModel();
 		ArrayList<Site> sites = new ArrayList<Site>();
-		RV r = new RV();
+		RV r = getMockRV();
 		sites.add(r);
 		s.add(r);
 		assertTrue(s.getCurrentSites().equals(sites));
 		s.saveSerial("serialFile");
 		s.loadSerial("serialFile");
-		assertTrue(s.getCurrentSites().equals(sites));
+		assertTrue(s.getCurrentSites().toString().equals(sites.toString()));
 	}
 	
 	@Test
 	public void testLoadandSaveText() {
 		SiteModel s = new SiteModel();
 		ArrayList<Site> sites = new ArrayList<Site>();
-		RV r = new RV();
+		RV r = getMockRV();
 		sites.add(r);
 		s.add(r);
 		assertTrue(s.getCurrentSites().equals(sites));
 		s.saveText("textFile");
 		s.loadText("textFile");
-		assertTrue(s.getCurrentSites().equals(sites));
+		assertTrue(s.getCurrentSites().toString().equals(sites.toString()));
 	}
 	
+	private RV getMockRV() {
+		GregorianCalendar g = new GregorianCalendar();
+		
+		try {
+			return new RV("John Doe", g, 1, 1, 1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 }
