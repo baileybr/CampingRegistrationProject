@@ -32,6 +32,13 @@ public class SiteModel extends AbstractTableModel {
 	/** Array of the column names **/
 	private String[] columnNames;
 	
+	/** Autosave booleans **/
+	private boolean textSave = false;
+	private boolean serialSave = false;
+	
+	/** String that holds autosave filename **/
+	private String saveName;
+	
 	/*******************************************************************
 	 * The default constructor that initializes the list of sites and
 	 * sets the column names
@@ -130,6 +137,12 @@ public class SiteModel extends AbstractTableModel {
 		sites.add(site);
 		
 		refresh();
+		
+		if(serialSave == true) {
+			saveSerial(saveName);
+		}else if(textSave == true) {
+			saveText(saveName);
+		}
 	}
 	
 	/*******************************************************************
@@ -141,6 +154,12 @@ public class SiteModel extends AbstractTableModel {
 		sites.remove(index);
 		
 		refresh();
+		
+		if(serialSave == true) {
+			saveSerial(saveName);
+		}else if(textSave == true) {
+			saveText(saveName);
+		}
 	}
 	
 	/*******************************************************************
@@ -166,6 +185,8 @@ public class SiteModel extends AbstractTableModel {
 			
 			o.close();
 			f.close();
+			serialSave = true;
+			saveName = filename;
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		} catch (IOException e) {
@@ -189,6 +210,8 @@ public class SiteModel extends AbstractTableModel {
 			
 			o.close();
 			f.close();
+			textSave = true;
+			saveName = filename;
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		} catch (IOException e) {
@@ -213,6 +236,8 @@ public class SiteModel extends AbstractTableModel {
 			}
 			
 			pw.close();
+			textSave = true;
+			saveName = filename;
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
@@ -241,6 +266,8 @@ public class SiteModel extends AbstractTableModel {
 			}
 			
 			refresh();
+			textSave = true;
+			saveName = filename;
 			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
