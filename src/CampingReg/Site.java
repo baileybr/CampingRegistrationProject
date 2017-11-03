@@ -7,8 +7,6 @@ import java.util.*;
  * Site class, keeps track of the person who is occupying the site,
  * what date this person checked in, how many days they are staying,
  * and their site number
- * 
- * @author Brendan Bailey
  ***********************************************************************/
 public class Site implements Serializable {
 	
@@ -32,12 +30,10 @@ public class Site implements Serializable {
 	private final int NUM_OF_SITES = 5;
 	
 	/** The minimum accepted date **/
-	private final GregorianCalendar MIN_DATE = 
-			new GregorianCalendar(2017, 0, 1);
+	private final GregorianCalendar MIN_DATE = new GregorianCalendar(2017, 0, 1);
 	
 	/** The maximum accepted date **/
-	private final GregorianCalendar MAX_DATE = 
-			new GregorianCalendar(2099, 11, 31);
+	private final GregorianCalendar MAX_DATE = new GregorianCalendar(2099, 11, 31);
 	
 	/*******************************************************************
 	 * Constructor that sets up the site with given parameters
@@ -51,8 +47,7 @@ public class Site implements Serializable {
 	 * 
 	 * @throws Exception when any set methods receive bad data
 	 ******************************************************************/
-	public Site(String name, GregorianCalendar date, int stay,
-			int site) throws Exception {
+	public Site(String name, GregorianCalendar date, int stay, int site) throws Exception {
 		/** Sets the name of the occupant **/
 		setNameReserving(name);
 		
@@ -67,7 +62,7 @@ public class Site implements Serializable {
 	}
 	
 	/*******************************************************************
-	 * Constructor that sets up the site with predefined settings.
+	 * Constructor that sets up the site with no values
 	 ******************************************************************/
 	public Site() {
 		
@@ -132,12 +127,10 @@ public class Site implements Serializable {
 			throw new Exception("Don't show");
 		}
 		else if (date.getTimeInMillis() < MIN_DATE.getTimeInMillis()) {
-			throw new Exception("Check in date cannot be before "
-					+ "1/1/2017");
+			throw new Exception("Check in date cannot be before 1/1/2017");
 		}
 		else if (date.getTimeInMillis() > MAX_DATE.getTimeInMillis()) {
-			throw new Exception("Check in date cannot be after "
-					+ "12/31/2099");
+			throw new Exception("Check in date cannot be after 12/31/2099");
 		}
 		
 		checkIn = date;
@@ -193,8 +186,7 @@ public class Site implements Serializable {
 	 ******************************************************************/
 	public void setSiteNumber(int site) throws Exception {
 		if (site < 1 || site > NUM_OF_SITES) {
-			throw new Exception("There are only " + NUM_OF_SITES 
-					+ " sites available");
+			throw new Exception("There are only " + NUM_OF_SITES + " sites available");
 		}
 		
 		siteNumber = site;
