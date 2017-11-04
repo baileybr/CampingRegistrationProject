@@ -30,8 +30,7 @@ public class RV extends Site {
 	 * 
 	 * @throws Exception when any of the parameters are invalid values
 	 ******************************************************************/
-	public RV(String name, GregorianCalendar date, int stay,
-			int site, int amps) throws Exception {
+	public RV(String name, GregorianCalendar date, int stay, int site, int amps) throws Exception {
 		/** Calls super class and sets variables accordingly */
 		super(name, date, stay, site);
 		
@@ -40,7 +39,7 @@ public class RV extends Site {
 	}
 	
 	/*******************************************************************
-	 * Constructor that sets up the tent site with default settings
+	 * Constructor that sets up the tent site with nothing
 	 ******************************************************************/
 	public RV () {
 		
@@ -79,8 +78,7 @@ public class RV extends Site {
 			power = amps;
 		}
 		else {
-			throw new Exception("Power can only be supplied in "
-					+ "30, 40, or 50 amps.");
+			throw new Exception("Power can only be supplied in 30, 40, or 50 amps.");
 		}
 	}
 	
@@ -92,5 +90,4 @@ public class RV extends Site {
 				this.getSiteNumber() + "," +
 				this.getPower();
 	}
-
 }

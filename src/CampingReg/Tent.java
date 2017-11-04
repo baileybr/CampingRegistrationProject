@@ -5,8 +5,6 @@ import java.util.GregorianCalendar;
 /***********************************************************************
  * Tent class, keeps track of the number of Tenters, then relies on
  * the extension of the Site class to keep track of other variables
- * 
- * @author Brendan Bailey
  **********************************************************************/
 public class Tent extends Site {
 	
@@ -26,8 +24,7 @@ public class Tent extends Site {
 	 * 
 	 * @throws Exception when any of the parameters are invalid
 	 ******************************************************************/
-	public Tent(String name, GregorianCalendar date, int stay,
-			int site, int tents) throws Exception {
+	public Tent(String name, GregorianCalendar date, int stay, int site, int tents) throws Exception {
 		/** Calls super class and sets variables accordingly **/
 		super(name, date, stay, site);
 		
@@ -36,7 +33,7 @@ public class Tent extends Site {
 	}
 	
 	/*******************************************************************
-	 * Constructor that sets up the tent site with default settings
+	 * Constructor that sets up the tent site with nothing
 	 ******************************************************************/
 	public Tent () {
 		
@@ -69,8 +66,7 @@ public class Tent extends Site {
 	 ******************************************************************/
 	public void setNumOfTenters(int tents) throws Exception {
 		if (tents < 1) {
-			throw new Exception("Number of tenters must be greater "
-					+ "than 0");
+			throw new Exception("Number of tenters must be greater than 0");
 		}
 		
 		numOfTenters = tents;

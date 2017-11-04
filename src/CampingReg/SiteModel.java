@@ -21,8 +21,6 @@ import javax.swing.table.AbstractTableModel;
 /***********************************************************************
  * The SiteModel class is the structure that all rows in the table will
  * follow
- * 
- * @author Ben Buurstra
  **********************************************************************/
 public class SiteModel extends AbstractTableModel {
 	
@@ -101,17 +99,12 @@ public class SiteModel extends AbstractTableModel {
 				return sites.get(rowIndex).getSiteNumber();
 			case 4:
 				if (sites.get(rowIndex) instanceof Tent) {
-					String text = 
-							((Tent)sites.get(rowIndex))
-							.getNumOfTenters() != 1 ? " tenters" : 
-							" tenter";
+					String text = ((Tent)sites.get(rowIndex)).getNumOfTenters() != 1 ? " tenters" : " tenter";
 					
-					return ((Tent)sites.get(rowIndex))
-							.getNumOfTenters() + text;
+					return ((Tent)sites.get(rowIndex)).getNumOfTenters() + text;
 				}
 				else if (sites.get(rowIndex) instanceof RV) {
-					return ((RV)sites.get(rowIndex)).getPower() + 
-							" amps";
+					return ((RV)sites.get(rowIndex)).getPower() + " amps";
 				}
 				break;
 		}
@@ -164,6 +157,7 @@ public class SiteModel extends AbstractTableModel {
 	
 	/*******************************************************************
 	 * Gets the site at the requested index
+	 * 
 	 * @param index the index of the requested site
 	 * @return the site at the specified index
 	 ******************************************************************/
@@ -178,14 +172,14 @@ public class SiteModel extends AbstractTableModel {
 	 ******************************************************************/
 	public void saveSerial(String filename) {
 		try {
-			FileOutputStream f = new FileOutputStream(new 
-					File(filename));
+			FileOutputStream f = new FileOutputStream(new File(filename));
 			ObjectOutputStream o = new ObjectOutputStream(f);
 			
 			o.writeObject(sites);
 			
 			o.close();
 			f.close();
+			
 			serialSave = true;
 			saveName = filename;
 		} catch (FileNotFoundException e) {
@@ -202,8 +196,7 @@ public class SiteModel extends AbstractTableModel {
 	 ******************************************************************/
 	public void loadSerial(String filename) {
 		try {
-			FileInputStream f = new FileInputStream(new 
-					File(filename));
+			FileInputStream f = new FileInputStream(new File(filename));
 			ObjectInputStream o = new ObjectInputStream(f);
 			
 			sites = (ArrayList<Site>) o.readObject();
@@ -212,6 +205,7 @@ public class SiteModel extends AbstractTableModel {
 			
 			o.close();
 			f.close();
+			
 			serialSave = true;
 			saveName = filename;
 		} catch (FileNotFoundException e) {
@@ -254,8 +248,7 @@ public class SiteModel extends AbstractTableModel {
 	public void loadText(String filename) {
 		try {
 			File file = new File(filename);
-			BufferedReader br = new BufferedReader(new 
-					FileReader(file));
+			BufferedReader br = new BufferedReader(new FileReader(file));
 			
 			sites.clear();
 			
@@ -269,6 +262,7 @@ public class SiteModel extends AbstractTableModel {
 			}
 			
 			refresh();
+			
 			textSave = true;
 			saveName = filename;
 		} catch (Exception e) {
@@ -287,16 +281,13 @@ public class SiteModel extends AbstractTableModel {
 	public Site stringToSite(String input) throws Exception {
 		String[] items = input.split(",");
 		
-		// TODO: Rewrite this to include validation
+		// TODO: Rewrite this to include better date validation
 		if (items.length == 6) {
 			GregorianCalendar date = new GregorianCalendar();
 			String[] parsedDate = items[2].split("/");
-			date.set(GregorianCalendar.MONTH, Integer
-					.parseInt(parsedDate[0]) - 1);
-			date.set(GregorianCalendar.DAY_OF_MONTH, Integer
-					.parseInt(parsedDate[1]));
-			date.set(GregorianCalendar.YEAR, Integer
-					.parseInt(parsedDate[2]));
+			date.set(GregorianCalendar.MONTH, Integer.parseInt(parsedDate[0]) - 1);
+			date.set(GregorianCalendar.DAY_OF_MONTH, Integer.parseInt(parsedDate[1]));
+			date.set(GregorianCalendar.YEAR, Integer.parseInt(parsedDate[2]));
 			
 			try {
 				if (items[0].indexOf("RV") > -1) {
@@ -319,8 +310,7 @@ public class SiteModel extends AbstractTableModel {
 			}
 		}
 		else {
-			throw new Exception("File was corrupted and could "
-					+ "not be loaded");
+			throw new Exception("File was corrupted and could not be loaded");
 		}
 		
 		return null;

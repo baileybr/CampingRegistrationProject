@@ -20,14 +20,12 @@ import javax.swing.JTextField;
  * 
  * @author Brendan Bailey
  **********************************************************************/
-public class DialogCheckInTent extends JDialog 
-							   implements ActionListener{
+public class DialogCheckInTent extends JDialog implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
 	
 	/* JTextFields */
-	private JTextField nameTxt, occupyedOnTxt, stayingTxt, 
-	siteNumberTxt, tentersTxt;
+	private JTextField nameTxt, occupyedOnTxt, stayingTxt, siteNumberTxt, tentersTxt;
 	
 	/* JButtons */
 	private JButton okButton, cancelButton;
@@ -39,8 +37,7 @@ public class DialogCheckInTent extends JDialog
 	private Tent unit;  
 	
 	/* JLabels */
-	private JLabel nameLabel, occupyingLabel, stayingLabel, siteLabel,
-	tentersLabel;
+	private JLabel nameLabel, occupyingLabel, stayingLabel, siteLabel, tentersLabel;
 	
 	/* Gregorian Calendar */
 	private GregorianCalendar gCalendarCheckIn;
@@ -66,9 +63,7 @@ public class DialogCheckInTent extends JDialog
 	 * @param paOccupy is the frame for the JDialog
 	 * @param d is the Tent being checked in
 	 ******************************************************************/
-	public DialogCheckInTent(JFrame paOccupy, 
-			Tent d, 
-			SiteModel sModel) {	
+	public DialogCheckInTent(JFrame paOccupy, Tent d, SiteModel sModel) {	
 		unit = d; 
 		this.sModel = sModel;
 		
@@ -154,9 +149,7 @@ public class DialogCheckInTent extends JDialog
 				closeStatus = true;
 			}
 			else {
-				JOptionPane.showMessageDialog(null, "There are empty "
-										+ "fields. Please populate all "
-										+ "fields with values");
+				JOptionPane.showMessageDialog(null, "There are empty fields. Please populate all fields with values");
 			}
 		}
 		else if (e.getSource() == cancelButton) {
@@ -196,24 +189,21 @@ public class DialogCheckInTent extends JDialog
 		try {
 			siteNum = Integer.parseInt(siteNumberTxt.getText());
 		} catch (NumberFormatException ex){
-			JOptionPane.showMessageDialog(null, "Site number must be"
-					+ " an integer. Please enter an integer.");
+			JOptionPane.showMessageDialog(null, "Site number must be an integer. Please enter an integer.");
 			isValid = false;
 		}
 		
 		try {
 			daysStaying = Integer.parseInt(stayingTxt.getText());
 		} catch (NumberFormatException ex){
-			JOptionPane.showMessageDialog(null, "Days staying must be"
-					+ " an integer. Please enter an integer.");
+			JOptionPane.showMessageDialog(null, "Days staying must be an integer. Please enter an integer.");
 			isValid = false;
 		}
 		
 		try {
 			tenters = Integer.parseInt(tentersTxt.getText());
 		} catch (NumberFormatException ex){
-			JOptionPane.showMessageDialog(null,"Number of tenters must"
-					+ " be an integer. Please enter an integer.");
+			JOptionPane.showMessageDialog(null,"Number of tenters must be an integer. Please enter an integer.");
 			isValid = false;
 		}
 		
@@ -227,15 +217,13 @@ public class DialogCheckInTent extends JDialog
 				
 				checkOtherSites();
 				
-				JOptionPane.showMessageDialog(null, "You Owe: $" + 
-						unit.calcCost());
+				JOptionPane.showMessageDialog(null, "You Owe: $" + unit.calcCost());
 				
 				dialog.dispose();
 			}
 			catch (Exception ex) {
 				if (!ex.getMessage().equals("Don't show")) {
-					JOptionPane.showMessageDialog(null, 
-							ex.getMessage());
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 			}
 		}	
@@ -263,9 +251,7 @@ public class DialogCheckInTent extends JDialog
 			}
 			
 			if (checkDates(inputInt[0], inputInt[1], inputInt[2])) {
-				return new GregorianCalendar(inputInt[2], 
-						inputInt[0] - 1,
-						inputInt[1]);
+				return new GregorianCalendar(inputInt[2], inputInt[0] - 1, inputInt[1]);
 			}
 		}
 		
@@ -282,15 +268,13 @@ public class DialogCheckInTent extends JDialog
 						   "December"};
 		
 		if (year < 2017 || year >= 2099) {
-			JOptionPane.showMessageDialog(null, "Please choose a year"
-					+ " from 2017 to 2099.");
+			JOptionPane.showMessageDialog(null, "Please choose a year from 2017 to 2099.");
 			
 			return false;
 		}
 		
 		if (month <= 0 || month > 12) {
-			JOptionPane.showMessageDialog(null, "Please choose a month"
-					+ " from 1 to 12.");
+			JOptionPane.showMessageDialog(null, "Please choose a month from 1 to 12.");
 			
 			return false;
 		}
@@ -304,9 +288,7 @@ public class DialogCheckInTent extends JDialog
 			case 10:
 			case 12:
 				if (day < 1 || day > 31) {
-					JOptionPane.showMessageDialog(null, "For "
-							+ months[month]
-							+ ", please choose a day from 1 to 31.");
+					JOptionPane.showMessageDialog(null, "For " + months[month] + ", please choose a day from 1 to 31.");
 					
 					return false;
 				}
@@ -317,9 +299,7 @@ public class DialogCheckInTent extends JDialog
 			case 9:
 			case 11:
 				if (day < 1 || day > 30) {
-					JOptionPane.showMessageDialog(null, "For "
-							+ months[month]
-							+ ", please choose a day from 1 to 30.");
+					JOptionPane.showMessageDialog(null, "For " + months[month] + ", please choose a day from 1 to 30.");
 					
 					return false;
 				}
@@ -327,9 +307,7 @@ public class DialogCheckInTent extends JDialog
 				return true;
 			case 2:
 				if (day < 1 || day > 28) {
-					JOptionPane.showMessageDialog(null, "For "
-							+ months[month]
-							+ ", please choose a day from 1 to 28.");
+					JOptionPane.showMessageDialog(null, "For " + months[month] + ", please choose a day from 1 to 28.");
 					
 					return false;
 				}
@@ -353,43 +331,27 @@ public class DialogCheckInTent extends JDialog
 		for (int i = 0; i < otherSites.size(); i++) {
 			// Find the other sites that have the same site number as
 			// the new site to be added
-			if (otherSites.get(i).getSiteNumber() == 
-					unit.getSiteNumber()) {
-				GregorianCalendar otherClone = 
-						(GregorianCalendar)otherSites.get(i)
-						.getCheckIn().clone();
-				GregorianCalendar unitClone = 
-						(GregorianCalendar)unit.getCheckIn().clone();
+			if (otherSites.get(i).getSiteNumber() == unit.getSiteNumber()) {
+				GregorianCalendar otherClone = (GregorianCalendar)otherSites.get(i).getCheckIn().clone();
+				GregorianCalendar unitClone = (GregorianCalendar)unit.getCheckIn().clone();
 				
 				for (int j = 0; j < unit.getDaysStaying(); j++) {
-					for (int k = 0; 
-							k < otherSites.get(i).getDaysStaying(); 
-							k++) {
-						if (unitClone.get(GregorianCalendar.MONTH) == 
-							otherClone.get(GregorianCalendar.MONTH) &&
-							unitClone.get(GregorianCalendar
-									.DAY_OF_MONTH) ==
-							otherClone.get(GregorianCalendar
-									.DAY_OF_MONTH) &&
-							unitClone.get(GregorianCalendar.YEAR) ==
-							otherClone.get(GregorianCalendar.YEAR)) {
+					for (int k = 0; k < otherSites.get(i).getDaysStaying(); k++) {
+						if (unitClone.get(GregorianCalendar.MONTH) == otherClone.get(GregorianCalendar.MONTH) &&
+							unitClone.get(GregorianCalendar.DAY_OF_MONTH) == otherClone.get(GregorianCalendar.DAY_OF_MONTH) &&
+							unitClone.get(GregorianCalendar.YEAR) == otherClone.get(GregorianCalendar.YEAR)) {
 							// TODO: Update message to include what 
 							// days are available near the requested 
 							// dates
-							throw new Exception("This site is reserved "
-									+ "during the requested date range."
-									+ "\nPlease try a different "
-									+ "check-in date and length "
-									+ "of stay");
+							throw new Exception("This site is reserved during the requested date range."
+									+ "\nPlease try a different check-in date and length of stay");
 						}
 						
-						otherClone.add(GregorianCalendar.DAY_OF_MONTH,
-								1);
+						otherClone.add(GregorianCalendar.DAY_OF_MONTH, 1);
 					}
 					
 					unitClone.add(GregorianCalendar.DAY_OF_MONTH, 1);
-					otherClone.add(GregorianCalendar.DAY_OF_MONTH, 
-							otherSites.get(i).getDaysStaying() * -1);
+					otherClone.add(GregorianCalendar.DAY_OF_MONTH, otherSites.get(i).getDaysStaying() * -1);
 				}
 			}
 		}
