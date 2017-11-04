@@ -3,8 +3,6 @@ package CampingReg;
 /***********************************************************************
  * CamptingRegistration has the main method in it, which runs when the
  * application is executed
- * 
- * @author Ben Buurstra
  **********************************************************************/
 public class CampingRegistration {
 	

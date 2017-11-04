@@ -8,8 +8,6 @@ import javax.swing.JOptionPane;
  * RV class, keeps track of the power supplied to the site,
  * then relies on the extension of the Site class to keep track of 
  * other variables
- * 
- * @author Brendan Bailey
  **********************************************************************/
 public class RV extends Site {
 	
