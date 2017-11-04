@@ -10,8 +10,6 @@ import javax.swing.*;
 
 /***********************************************************************
  * Class that creates the JDialog Box when checking in to an RV site
- * 
- * @author Brendan Bailey
  **********************************************************************/
 public class DialogCheckInRv extends JDialog implements ActionListener{
 

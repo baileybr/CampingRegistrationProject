@@ -17,8 +17,6 @@ import javax.swing.JTextField;
 
 /***********************************************************************
  * Class that creates the JDialog Box when checking in to an Tent site
- * 
- * @author Brendan Bailey
  **********************************************************************/
 public class DialogCheckInTent extends JDialog implements ActionListener{
 	
